@@ -1,0 +1,10 @@
+__pycache__
+/.venv
+/dist
+employers.txt
+sites.txt
+output.json
+/docker/config.json
+/*.html
+.venvпш
+config.toml
