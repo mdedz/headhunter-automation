@@ -5,12 +5,26 @@ from typing import List, TextIO
 from ai.base import BaseLLM, LLMError
 from api.hh_api.schemas.me import MeResponse
 from api.hh_api.schemas.similar_vacancies import VacancyItem
-from operations.vacancy.actions import serialize_for_llm
 from utils import random_text
 
 logger = logging.getLogger(__package__)
 
+def _serialize_for_llm(vacancy: VacancyItem) -> str:
+    vacancy_info = {
+        "vacancy_name": vacancy.name,
+        "employer_name": vacancy.employer.name,
+        "vacancy_url": vacancy.alternate_url,
+        "requirements": vacancy.snippet.requirement,
+        "responsibilities": vacancy.snippet.responsibility,
+    }
 
+    return (
+        f"Вакансия: {vacancy_info['vacancy_name']}\n"
+        f"Компания: {vacancy_info['employer_name']}\n"
+        f"Требования: {vacancy_info['requirements']}\n"
+        f"Обязанности: {vacancy_info['responsibilities']}\n"
+    )
+    
 @dataclass
 class NegotiationsLLM:
     chat: BaseLLM
@@ -23,7 +37,7 @@ class NegotiationsLLM:
             return
         
     def _get_msg(self, vacancy: VacancyItem, footer_msg: str = "") -> str:
-        vacancy_info = serialize_for_llm(vacancy)
+        vacancy_info = _serialize_for_llm(vacancy)
         logger.debug("AI prompt:\n%s", vacancy_info)
         
         msg = self.chat.send_message(vacancy_info, verify_tag_end=True)

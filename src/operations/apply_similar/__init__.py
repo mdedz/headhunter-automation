@@ -108,6 +108,10 @@ class Operation(base.OperationBase):
                     vacancy.name,
                     vacancy.apply_alternate_url
                 )
+                
+                db = BlockedVacanciesDB()
+                db.add(vacancy.id)
+                
                 return False
         
         try:
@@ -132,10 +136,12 @@ class Operation(base.OperationBase):
 
         if self.args.force_message or vacancy.response_letter_required:
             if self.args.use_ai:
+                vacancy_desc = self.api_client.
                 msg = self.negotiations_llm.get_msg(
                     vacancy, 
                     self.config.llm.cover_letters.messages.footer_msg
                 )
+                
                 if not msg: return
             else:
                 me_info = self.api_client.me.get()

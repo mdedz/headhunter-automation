@@ -1,29 +1,35 @@
+from curses.ascii import isdigit
 from dataclasses import dataclass
 import logging
 from ai.base import BaseLLM, LLMError
 from api.hh_api.schemas.similar_vacancies import VacancyItem
-from operations.vacancy.actions import serialize_for_llm
 
 logger = logging.getLogger(__package__)
 
-
+def _serialize_for_llm(vacancy: VacancyItem) -> str:
+    return (
+        f"Требования: {vacancy.snippet.requirement}\n"
+        f"Обязанности: {vacancy.snippet.responsibility}\n"
+    )
+    
 @dataclass
 class VacancyRelevanceLLM:
     chat: BaseLLM
     
     def verify(self, vacancy: VacancyItem):
         try:                    
-            return self._get_cover_letter(vacancy)
+            return self._verify(vacancy)
         except LLMError as ex:
             logger.error(ex)
-            return
+            return True
         
-    def _get_cover_letter(self, vacancy: VacancyItem, footer_msg: str = "") -> str:
-        vacancy_info = serialize_for_llm(vacancy)
+    def _verify(self, vacancy: VacancyItem, footer_msg: str = "") -> bool:
+        vacancy_info = _serialize_for_llm(vacancy)
         logger.debug("AI prompt:\n%s", vacancy_info)
         
-        msg = self.chat.send_message(vacancy_info, verify_tag_end=True)
+        msg = self.chat.send_message(vacancy_info)
+        if msg.isdigit():
+            return int(msg) == 1
         
-        logger.debug(f"LLM cover letter is: {msg}")
-        return msg
+        return True
 

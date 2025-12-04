@@ -100,3 +100,13 @@ class SimilarVacancies(BaseEndpoint):
 
         return from_dict(SimilarVacanciesResponse, data)
     
+    
+class Vacancy(BaseEndpoint):
+    """
+    GET: https://api.hh.ru/vacancies/{vacancy_id}
+    """
+    def get(self, vacancy_id: str, *args, **kwargs) -> SimilarVacanciesResponse:
+        data = self.client.get(f"/vacancies/{vacancy_id}", *args, **kwargs)
+
+        return from_dict(SimilarVacanciesResponse, data)
+    

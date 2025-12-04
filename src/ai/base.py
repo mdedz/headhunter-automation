@@ -26,6 +26,6 @@ class BaseLLM(ABC):
         self.prompts = prompts
 
     @abstractmethod
-    def send_message(self, user_message: str) -> str:
+    def send_message(self, user_message: str, *args, **kwargs) -> str:
         """Return model-generated text"""
         pass
