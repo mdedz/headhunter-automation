@@ -41,7 +41,7 @@ poetry --version
 1. Клонируем репозиторий:
 
 ```bash
-git clone <URL_проекта>
+git clone https://github.com/mdedz/headhunter-automation
 cd headhunter-automation
 ```
 
