@@ -82,7 +82,6 @@ class OperationBase(BaseOperation):
             action=argparse.BooleanOptionalAction,
         )
         parser.add_argument(
-            "-relevance",
             "--verify-relevance",
             help="Verify relevance of vacancy with LLM",
             default=False,

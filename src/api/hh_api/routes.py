@@ -5,6 +5,7 @@ from api.hh_api.schemas.negotiations import DeleteNegotiationsResponse, GetNegot
 from api.hh_api.schemas.my_resumes import GetResumesResponse
 from api.hh_api.schemas.negotiations_messages import GetNegotiationsMessagesResponse
 from api.hh_api.schemas.similar_vacancies import SimilarVacanciesResponse
+from api.hh_api.schemas.vacancy import VacancyFull
 from dacite import from_dict
 
 class BlacklistedEmployers(BaseEndpoint):
@@ -105,8 +106,8 @@ class Vacancy(BaseEndpoint):
     """
     GET: https://api.hh.ru/vacancies/{vacancy_id}
     """
-    def get(self, vacancy_id: str, *args, **kwargs) -> SimilarVacanciesResponse:
+    def get(self, vacancy_id: str, *args, **kwargs) -> VacancyFull:
         data = self.client.get(f"/vacancies/{vacancy_id}", *args, **kwargs)
 
-        return from_dict(SimilarVacanciesResponse, data)
+        return from_dict(VacancyFull, data)
     

@@ -136,9 +136,10 @@ class Operation(base.OperationBase):
 
         if self.args.force_message or vacancy.response_letter_required:
             if self.args.use_ai:
-                vacancy_desc = self.api_client.
+                vacancy_full = self.api_client.vacancy.get(vacancy.id)
+
                 msg = self.negotiations_llm.get_msg(
-                    vacancy, 
+                    vacancy_full,
                     self.config.llm.cover_letters.messages.footer_msg
                 )
                 

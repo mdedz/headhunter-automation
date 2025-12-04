@@ -5,39 +5,53 @@ from typing import List, TextIO
 from ai.base import BaseLLM, LLMError
 from api.hh_api.schemas.me import MeResponse
 from api.hh_api.schemas.similar_vacancies import VacancyItem
+from api.hh_api.schemas.vacancy import VacancyFull
 from utils import random_text
+from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__package__)
 
-def _serialize_for_llm(vacancy: VacancyItem) -> str:
+
+def html_to_text(html: str) -> str:
+    soup = BeautifulSoup(html, "html.parser")
+
+    for tag in soup(["script", "style"]):
+        tag.extract()
+
+    return soup.get_text(separator=" ", strip=True)
+
+def _serialize_for_llm(vacancy: VacancyFull) -> str:
+    key_skills = " ".join([x.name for x in vacancy.key_skills])
+    description = html_to_text(vacancy.description)
     vacancy_info = {
         "vacancy_name": vacancy.name,
         "employer_name": vacancy.employer.name,
-        "vacancy_url": vacancy.alternate_url,
-        "requirements": vacancy.snippet.requirement,
-        "responsibilities": vacancy.snippet.responsibility,
+        "key_skills": key_skills,
+        "description": description,
+        "experience": vacancy.experience.name,
     }
 
     return (
         f"Вакансия: {vacancy_info['vacancy_name']}\n"
         f"Компания: {vacancy_info['employer_name']}\n"
-        f"Требования: {vacancy_info['requirements']}\n"
-        f"Обязанности: {vacancy_info['responsibilities']}\n"
+        f"Навыки: {vacancy_info['key_skills']}\n"
+        f"Описание: {vacancy_info['description']}\n"
+        f"Опыт: {vacancy_info['experience']}\n"
     )
     
 @dataclass
 class NegotiationsLLM:
     chat: BaseLLM
     
-    def get_msg(self, vacancy: VacancyItem, footer_msg: str = ""):
+    def get_msg(self, vacancy_full: VacancyFull, footer_msg: str = ""):
         try:                    
-            return self._get_msg(vacancy, footer_msg)
+            return self._get_msg(vacancy_full, footer_msg)
         except LLMError as ex:
             logger.error(ex)
             return
         
-    def _get_msg(self, vacancy: VacancyItem, footer_msg: str = "") -> str:
-        vacancy_info = _serialize_for_llm(vacancy)
+    def _get_msg(self, vacancy_full: VacancyFull, footer_msg: str = "") -> str:
+        vacancy_info = _serialize_for_llm(vacancy_full)
         logger.debug("AI prompt:\n%s", vacancy_info)
         
         msg = self.chat.send_message(vacancy_info, verify_tag_end=True)

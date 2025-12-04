@@ -270,7 +270,7 @@ class ApiClient(BaseClient):
             "token_type": "bearer"
         }
 
-from api.hh_api.routes import BlacklistedEmployers, Me, Negotiations, MyResumes, NegotiationsMessages, PublishResume, SimilarVacancies
+from api.hh_api.routes import BlacklistedEmployers, Me, Negotiations, MyResumes, NegotiationsMessages, PublishResume, SimilarVacancies, Vacancy
 
 class HHApi(ApiClient):
     blacklisted_employers: BlacklistedEmployers
@@ -280,6 +280,7 @@ class HHApi(ApiClient):
     me: Me
     similar_vacancies: SimilarVacancies
     negotiations_messages: NegotiationsMessages
+    vacancy: Vacancy
     
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -291,4 +292,5 @@ class HHApi(ApiClient):
         self.me = Me(self)
         self.similar_vacancies = SimilarVacancies(self)
         self.negotiations_messages = NegotiationsMessages(self)
+        self.vacancy = Vacancy(self)
         
