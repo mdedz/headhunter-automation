@@ -1,7 +1,7 @@
 from abc import abstractmethod
 import argparse
 import logging
-from typing import Any, TextIO
+from typing import Any, List, TextIO
 
 from api.hh_api.schemas.similar_vacancies import VacancyItem
 
@@ -30,7 +30,7 @@ class Namespace(BaseNamespace):
     search: str
     schedule: str
     dry_run: bool
-    
+    search_field: List[str]
     experience: str
     employment: list[str] | None
     area: list[str] | None
@@ -54,7 +54,7 @@ class Namespace(BaseNamespace):
     sort_point_lng: float | None
     no_magic: bool
     premium: bool
-
+    clusters: bool
 
 def _bool(v: bool) -> str:
     return str(v).lower()

@@ -27,7 +27,7 @@ class Operation(base.OperationBase):
     ) -> None:
         self.args: base.Namespace = args
         self.config = Config.load(args.config_path)
-        
+        logger.info("COnfig is %s", self.config)
         self.api_client = api_client
         self.resume_id = args.resume_id or get_resume_id(api_client)
         self.application_messages = self._get_application_messages(args.message_list)
@@ -133,7 +133,11 @@ class Operation(base.OperationBase):
             "vacancy_id": vacancy.id,
             "message": "",
         }
-
+        logger.debug("send apply %s %s", 
+                    self.args.force_message,
+                    self.args.use_ai
+                    )
+        
         if self.args.force_message or vacancy.response_letter_required:
             if self.args.use_ai:
                 vacancy_full = self.api_client.vacancy.get(vacancy.id)
@@ -142,7 +146,6 @@ class Operation(base.OperationBase):
                     vacancy_full,
                     self.config.llm.cover_letters.messages.footer_msg
                 )
-                
                 if not msg: return
             else:
                 me_info = self.api_client.me.get()

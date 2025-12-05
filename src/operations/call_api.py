@@ -6,9 +6,9 @@ import sys
 
 from api.client import ALLOWED_METHODS
 
-from ..api import HHApi, ApiError
-from ..main import BaseOperation
-from ..main import Namespace as BaseNamespace
+from src.api import HHApi, ApiError
+from src.main import BaseOperation
+from src.main import Namespace as BaseNamespace
 
 logger = logging.getLogger(__package__)
 
