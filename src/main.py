@@ -11,9 +11,9 @@ from typing import Literal, Sequence
 
 from src.config import Config
 
-from .api import HHApi
-from .color_log import ColorHandler
-from .utils import Data
+from src.api import HHApi
+from src.color_log import ColorHandler
+from src.utils import Data
 
 logger = logging.getLogger(__package__)
 

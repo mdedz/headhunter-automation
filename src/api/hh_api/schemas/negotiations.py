@@ -43,10 +43,10 @@ class Vacancy:
     alternate_url: str
     name: str
     employer: Employer | None
-    salary_range: SalaryRange
+    salary_range: SalaryRange | None
     created_at: str
 
-
+@dataclass
 class Resume:
     id: str
     title: str

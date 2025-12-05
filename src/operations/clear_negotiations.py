@@ -1,16 +1,17 @@
 # Этот модуль можно использовать как образец для других
 import argparse
 import logging
-from datetime import datetime, timedelta, timezone
+import datetime
+from datetime import timedelta, timezone
 from typing import List
 
 from api.hh_api.schemas.negotiations import DeleteNegotiationsResponse, GetNegotiationsListResponse, NegotiationItem
 
-from ..api import ClientError, HHApi
-from ..constants import INVALID_ISO8601_FORMAT
-from ..main import BaseOperation
-from ..main import Namespace as BaseNamespace
-from ..utils import print_err, truncate_string
+from api import ClientError, HHApi
+from constants import INVALID_ISO8601_FORMAT
+from main import BaseOperation
+from main import Namespace as BaseNamespace
+from utils import print_err, truncate_string
 
 logger = logging.getLogger(__package__)
 
@@ -31,6 +32,7 @@ class Operation(BaseOperation):
             default=30,
             help="Удалить отклики старше опр. кол-ва дней. По умолчанию: %(default)d",
         )
+        
         parser.add_argument(
             "--all",
             type=bool,
@@ -47,6 +49,17 @@ class Operation(BaseOperation):
         )
 
     def _get_active_negotiations(self, api_client: HHApi) -> List[NegotiationItem]:
+        #Statuses can be 
+        # id: all, name: Все 
+        # id: active, name: Активные
+        # id: invitations, name: Активные приглашения
+        # id: response, name: Активные отклики}
+        # id: discard, name: Отказ
+        # id: archived, name: Архивированные
+        # id: non_archived, name: Все, кроме архивированных
+        # id: deleted, name: Скрытые
+        # id: interview, name: Собеседование
+        # id: hired, name: Выход на работу 
         rv: List[NegotiationItem] = []
         page = 0
         per_page = 100
@@ -54,8 +67,9 @@ class Operation(BaseOperation):
             r: GetNegotiationsListResponse = api_client.negotiations.get(
                 page=page,
                 per_page=per_page,
-                status="active"
+                status="all"
             )
+            
             rv.extend(r.items)
             page += 1
             if page >= r.pages:
@@ -69,22 +83,21 @@ class Operation(BaseOperation):
         for item in negotiations:
             state = item.state
             is_discard = state.id == "discard"
-
-            if not item.hidden and (
+            if (
                 args.all
                 or is_discard
                 or (
                     state.id == "response"
-                    and (datetime.utcnow() - timedelta(days=args.older_than)).replace(tzinfo=timezone.utc)
-                    > datetime.strptime(item.updated_at, INVALID_ISO8601_FORMAT)
+                    and (datetime.datetime.now(datetime.timezone.utc) - timedelta(days=args.older_than)).replace(tzinfo=timezone.utc)
+                    > datetime.datetime.strptime(item.updated_at, INVALID_ISO8601_FORMAT)
                 )
             ):
                 decline_allowed = item.decline_allowed or False
-                r_delete: DeleteNegotiationsResponse = api_client.negotiations.delete(
+                r_delete = api_client.negotiations.delete(
                     item.id,
                     with_decline_message=decline_allowed,
                 )
-                assert {} == r_delete
+                assert r_delete
 
                 vacancy = item.vacancy
                 if vacancy is None:
@@ -92,17 +105,17 @@ class Operation(BaseOperation):
                     continue
 
                 print(
-                    "❌ Удалили",
+                    "❌ Удален",
                     state.name.lower(),
                     vacancy.alternate_url,
                     "(",
                     truncate_string(vacancy.name),
                     ")",
                 )
-                if is_discard and args.blacklist_discard:
+                if args.blacklist_discard and is_discard:
                     employer = vacancy.employer
                     if not employer or not employer:
-                        # Работодатель удален или скрыт
+                        # Employer is deleted or hidden
                         continue
                     try:
                         r_put = api_client.blacklisted_employers.put(str(employer.id))

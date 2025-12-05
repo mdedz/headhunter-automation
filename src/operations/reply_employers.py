@@ -155,7 +155,7 @@ class Operation(BaseOperation):
                     logger.debug("Skipping: vacancy.employer = None")
                     continue
 
-                salary: SalaryRange = vacancy.salary_range
+                salary = vacancy.salary_range
 
                 if employer.id in blacklisted:
                     print(

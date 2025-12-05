@@ -27,7 +27,7 @@ class Operation(base.OperationBase):
     ) -> None:
         self.args: base.Namespace = args
         self.config = Config.load(args.config_path)
-        logger.info("COnfig is %s", self.config)
+
         self.api_client = api_client
         self.resume_id = args.resume_id or get_resume_id(api_client)
         self.application_messages = self._get_application_messages(args.message_list)
