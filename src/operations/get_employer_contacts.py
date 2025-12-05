@@ -1,7 +1,6 @@
 import argparse
 import logging
-from os import getenv
-import pathlib
+
 from ..main import BaseOperation
 from ..main import Namespace as BaseNamespace
 
@@ -50,7 +49,8 @@ class Operation(BaseOperation):
         if args.export:
             contact_persons = []
             if args.format == "jsonl":
-                import json, sys
+                import json
+                import sys
 
                 for contact in contact_persons:
                     json.dump(contact, sys.stdout, ensure_ascii=False)

@@ -1,14 +1,14 @@
 from __future__ import annotations
-from dataclasses import dataclass, fields, is_dataclass
-from pathlib import Path
-from typing import Any, Dict, Optional, Union
+
 import tomllib
-from dataclasses import dataclass, field
-from typing import get_type_hints
+from dataclasses import dataclass, field, fields, is_dataclass
+from pathlib import Path
+from typing import Any, Optional, Union, get_type_hints
+
 
 @dataclass
 class Proxy:
-    proxy_url: str = "" 
+    proxy_url: str = ""
 
 @dataclass
 class Candidate:

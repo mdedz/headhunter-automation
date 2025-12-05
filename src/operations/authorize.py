@@ -1,16 +1,16 @@
 import argparse
 import logging
-from urllib.parse import parse_qs, urlsplit
 import sys
 from typing import Any
-from ..utils import print_err
+from urllib.parse import parse_qs, urlsplit
 
+from ..utils import print_err
 
 try:
     from PyQt6.QtCore import QUrl
-    from PyQt6.QtWidgets import QApplication, QMainWindow
     from PyQt6.QtWebEngineCore import QWebEngineUrlSchemeHandler
     from PyQt6.QtWebEngineWidgets import QWebEngineView
+    from PyQt6.QtWidgets import QApplication, QMainWindow
 
     QT_IMPORTED = True
 except ImportError:
@@ -31,7 +31,7 @@ except ImportError:
         pass
 
 
-from ..api import HHApi 
+from ..api import HHApi
 from ..main import BaseOperation, Namespace
 
 logger = logging.getLogger(__package__)

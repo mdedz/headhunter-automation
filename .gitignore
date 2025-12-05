@@ -7,3 +7,6 @@ output.json
 /docker/config.json
 /*.html
 config.toml
+.vscode/
+.ruff_cache/
+.pytest_cache/

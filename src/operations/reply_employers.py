@@ -1,12 +1,14 @@
 from __future__ import annotations
-import os
+
 import argparse
 import logging
 import random
+import re
 import time
-from typing import Tuple, List
+from itertools import count
+from typing import List, Tuple
 
-from api.hh_api.schemas.negotiations import Employer, NegotiationItem, SalaryRange, Vacancy
+from api.hh_api.schemas.negotiations import NegotiationItem, SalaryRange
 from api.hh_api.schemas.negotiations_messages import NegotiationsMessagesItem
 from mixins import get_resume_id
 
@@ -14,8 +16,6 @@ from ..api import ApiError, HHApi
 from ..main import BaseOperation
 from ..main import Namespace as BaseNamespace
 from ..utils import parse_interval, random_text
-import re
-from itertools import count
 
 try:
     import readline
@@ -88,7 +88,7 @@ class Operation(BaseOperation):
         self, args: Namespace, api_client: HHApi
     ) -> None:
         self.api_client = api_client
-        
+
         self.resume_id = get_resume_id(self.api_client)
         self.reply_min_interval, self.reply_max_interval = args.reply_interval
         self.reply_message = args.reply_message or args.config["reply_message"]
@@ -128,7 +128,7 @@ class Operation(BaseOperation):
                 if resume is None:
                     logger.debug("Skipping negotiations resume is none")
                     continue
-                
+
                 if self.resume_id != resume.id:
                     continue
 
@@ -142,19 +142,19 @@ class Operation(BaseOperation):
                     continue
 
                 logger.debug(negotiation)
-                
+
                 nid = negotiation.id
-                
+
                 vacancy = negotiation.vacancy
                 if vacancy is None:
                     logger.debug("Skipping negotiations without vacancy defined")
                     continue
-                
+
                 employer = vacancy.employer
                 if employer is None:
                     logger.debug("Skipping: vacancy.employer = None")
                     continue
-                
+
                 salary: SalaryRange = vacancy.salary_range
 
                 if employer.id in blacklisted:
@@ -181,10 +181,10 @@ class Operation(BaseOperation):
                 while True:
                     messages_res = self.api_client.negotiations_messages.get(
                         nid, page=page
-                    )   
+                    )
 
-                    items = messages_res.items  
-                    
+                    items = messages_res.items
+
                     last_message = items[-1]
                     message_history.extend(
                         (
@@ -265,10 +265,10 @@ class Operation(BaseOperation):
 
                     if send_message.startswith("/ban"):
                         employer_id = employer.id
-                        if employer_id is None: 
+                        if employer_id is None:
                             logger.debug("Employer id is none")
                             continue
-                        
+
                         self.api_client.blacklisted_employers.put(employer_id)
                         blacklisted.append(employer_id)
                         print(

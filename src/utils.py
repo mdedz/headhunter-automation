@@ -12,7 +12,6 @@ from os import getenv
 from pathlib import Path
 from threading import Lock
 from typing import Any
-import tomllib
 
 from constants import INVALID_ISO8601_FORMAT
 
@@ -169,5 +168,5 @@ class BlockedVacanciesDB:
         self._save()
 
     def is_in_list(self, vacancy_id):
-        l = self.list()
-        return vacancy_id in l
+        array = self.list()
+        return vacancy_id in array

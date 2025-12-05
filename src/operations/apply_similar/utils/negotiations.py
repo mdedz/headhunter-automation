@@ -1,13 +1,15 @@
-from dataclasses import dataclass
 import logging
 import random
+from dataclasses import dataclass
 from typing import List, TextIO
+
+from bs4 import BeautifulSoup
+
 from ai.base import BaseLLM, LLMError
 from api.hh_api.schemas.me import MeResponse
 from api.hh_api.schemas.similar_vacancies import VacancyItem
 from api.hh_api.schemas.vacancy import VacancyFull
 from utils import random_text
-from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__package__)
 
@@ -38,38 +40,38 @@ def _serialize_for_llm(vacancy: VacancyFull) -> str:
         f"Описание: {vacancy_info['description']}\n"
         f"Опыт: {vacancy_info['experience']}\n"
     )
-    
+
 @dataclass
 class NegotiationsLLM:
     chat: BaseLLM
-    
+
     def get_msg(self, vacancy_full: VacancyFull, footer_msg: str = ""):
-        try:                    
+        try:
             return self._get_msg(vacancy_full, footer_msg)
         except LLMError as ex:
             logger.error(ex)
             return
-        
+
     def _get_msg(self, vacancy_full: VacancyFull, footer_msg: str = "") -> str:
         vacancy_info = _serialize_for_llm(vacancy_full)
         logger.debug("AI prompt:\n%s", vacancy_info)
-        
+
         msg = self.chat.send_message(vacancy_info, verify_tag_end=True)
-        
+
         msg += "\n" + footer_msg + "\n"
         logger.debug(f"LLM cover letter is: {msg}")
         return msg
-        
+
 
 class NegotiationsLocal:
-    def get_msg(self, 
-                me_info: MeResponse, 
-                vacancy: VacancyItem, 
+    def get_msg(self,
+                me_info: MeResponse,
+                vacancy: VacancyItem,
         ):
-        application_msgs = self._get_application_messages() 
+        application_msgs = self._get_application_messages()
 
         return self._get_random_predefined_msg(application_msgs, me_info, vacancy)
-    
+
     @staticmethod
     def _get_application_messages(message_list: TextIO | None = None) -> list[str]:
         if message_list:
@@ -89,7 +91,7 @@ class NegotiationsLocal:
             "email": user_info.email,
             "phone": user_info.phone,
         }
-        
+
         message_placeholders = {
             "vacancy_name": vacancy.name,
             "employer_name": vacancy.employer.name,
@@ -100,10 +102,9 @@ class NegotiationsLocal:
             "Вакансия %(vacancy_name)s от %(employer_name)s"
             % message_placeholders
         )
-        
+
         msg = (
             random_text(random.choice(msg_template))
             % message_placeholders
         )
         return msg
-    

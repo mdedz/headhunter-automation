@@ -6,7 +6,7 @@ from typing import List
 
 from api.hh_api.schemas.negotiations import DeleteNegotiationsResponse, GetNegotiationsListResponse, NegotiationItem
 
-from ..api import HHApi, ClientError
+from ..api import ClientError, HHApi
 from ..constants import INVALID_ISO8601_FORMAT
 from ..main import BaseOperation
 from ..main import Namespace as BaseNamespace
@@ -65,11 +65,11 @@ class Operation(BaseOperation):
     def run(self, args: Namespace, api_client: HHApi, *_) -> None:
         negotiations = self._get_active_negotiations(api_client)
         print("Всего активных:", len(negotiations))
-        
+
         for item in negotiations:
             state = item.state
             is_discard = state.id == "discard"
-            
+
             if not item.hidden and (
                 args.all
                 or is_discard
@@ -85,12 +85,12 @@ class Operation(BaseOperation):
                     with_decline_message=decline_allowed,
                 )
                 assert {} == r_delete
-                
+
                 vacancy = item.vacancy
                 if vacancy is None:
                     logger.debug("Skipping negotiations without vacancy defined")
                     continue
-                
+
                 print(
                     "❌ Удалили",
                     state.name.lower(),
@@ -116,5 +116,5 @@ class Operation(BaseOperation):
                         )
                     except ClientError as ex:
                         print_err("❗ Ошибка:", ex)
-                        
+
         print("🧹 Чистка заявок завершена!")

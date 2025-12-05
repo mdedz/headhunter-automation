@@ -13,7 +13,7 @@ from src.config import Config
 
 from .api import HHApi
 from .color_log import ColorHandler
-from .utils import Data, get_config_path
+from .utils import Data
 
 logger = logging.getLogger(__package__)
 
@@ -98,7 +98,7 @@ class HHApplicantTool:
             help="Задержка между запросами к API HH",
         )
         parser.add_argument(
-            "--user-agent", 
+            "--user-agent",
             help="User-Agent для каждого запроса"
         )
         parser.add_argument(
@@ -126,7 +126,7 @@ class HHApplicantTool:
         # log_level = max(logging.DEBUG, logging.WARNING - args.verbosity * 10)
         logger.setLevel(logging.ERROR)
         handler = ColorHandler()
-        
+
         handler.setFormatter(logging.Formatter("[%(levelname).1s] %(message)s"))
         logger.addHandler(handler)
         if args.run:

@@ -5,13 +5,15 @@ from api.hh_api.schemas.vacancy import Experience, KeySkills, VacancyFull
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.operations.apply_similar import Operation
-import pytest
-from unittest.mock import MagicMock, patch, call
+from types import SimpleNamespace
+from unittest.mock import MagicMock, patch
 
-from src.api.errors import LimitExceeded, ApiError
-from src.api.hh_api.schemas.similar_vacancies import Employer, SimilarVacanciesResponse, VacancyItem
+import pytest
+
 from src.api.hh_api.schemas.me import MeResponse
+from src.api.hh_api.schemas.similar_vacancies import Employer, SimilarVacanciesResponse, VacancyItem
+from src.operations.apply_similar import Operation
+
 
 class FakeLLMOptions:
     provider = "groq"
@@ -21,8 +23,10 @@ class FakeLLMOptions:
     max_tokens = 1000
     top_p = 1.0
 
+
 class FakeLLMPrompts:
     system = "system prompt"
+
 
 class FakeLLM:
     def __init__(self):
@@ -30,13 +34,12 @@ class FakeLLM:
         self.options = FakeLLMOptions()
         self.messages = SimpleNamespace(footer_msg="footer")
 
+
 class FakeLLMConfig:
     def __init__(self):
-        self.llm = SimpleNamespace(
-            cover_letters=FakeLLM(),
-            verify_relevance=FakeLLM()
-        )
+        self.llm = SimpleNamespace(cover_letters=FakeLLM(), verify_relevance=FakeLLM())
         self.candidate = SimpleNamespace(info="candidate info")
+
 
 @pytest.fixture
 def mock_config():
@@ -44,21 +47,20 @@ def mock_config():
 
 
 # ---- Fixtures ----------------------------------------------------------------
-from types import SimpleNamespace
+
 
 @pytest.fixture
 def args() -> SimpleNamespace:
     """Mock for Namespace dataclass with all required attributes."""
     return SimpleNamespace(
-        data = MagicMock,
-        config_path = "config_path",
-        verbosity = 0,
-        delay = 0.0,
-        user_agent = "user_agent",
-        proxy_url = "proxy_url",
-        
+        data=MagicMock,
+        config_path="config_path",
+        verbosity=0,
+        delay=0.0,
+        user_agent="user_agent",
+        proxy_url="proxy_url",
         resume_id="RESUME123",
-        message_list=None, 
+        message_list=None,
         force_message=True,
         use_ai=True,
         verify_relevance=False,
@@ -94,34 +96,37 @@ def args() -> SimpleNamespace:
         sort_point_lng=None,
         no_magic=False,
         premium=False,
-        clusters=False
+        clusters=False,
     )
+
 
 @pytest.fixture
 def vacancy():
     return vacancy_item()
 
-def vacancy_item(): 
-    """Simple fake vacancy.""" 
-    v = MagicMock(spec=VacancyItem) 
-    v.id = "123" 
-    v.name = "Backend Developer" 
-    v.has_test = False 
-    v.archived = False 
-    v.relations = [] 
-    v.employer = Employer 
-    v.employer.id = "E1" 
-    v.alternate_url = "https://hh.ru/vacancy/123" 
-    v.apply_alternate_url = "https://hh.ru/apply/123" 
-    v.response_letter_required = True 
+
+def vacancy_item():
+    """Simple fake vacancy."""
+    v = MagicMock(spec=VacancyItem)
+    v.id = "123"
+    v.name = "Backend Developer"
+    v.has_test = False
+    v.archived = False
+    v.relations = []
+    v.employer = Employer
+    v.employer.id = "E1"
+    v.alternate_url = "https://hh.ru/vacancy/123"
+    v.apply_alternate_url = "https://hh.ru/apply/123"
+    v.response_letter_required = True
     return v
+
 
 def vacancy_full_item():
     """Simple fake full vacancy."""
     employer = Employer(id="E1", name="Company X")
     key_skills = KeySkills(name="skill")
     experience = Experience(id="1", name="exp")
-    
+
     v = MagicMock(spec=VacancyFull)
     v.id = "123"
     v.name = "Backend Developer"
@@ -129,8 +134,9 @@ def vacancy_full_item():
     v.experience = experience
     v.key_skills = [key_skills]
     v.employer = employer
-    
+
     return v
+
 
 def me():
     """Simple fake Me response."""
@@ -143,13 +149,14 @@ def me():
     v.phone = None
     return v
 
+
 def similar_vacancies_response():
     resp = MagicMock(spec=SimilarVacanciesResponse)
     _vacancy = vacancy_item()
     resp.pages = 1
     resp.items = [_vacancy]
     return resp
-    
+
 
 @pytest.fixture
 def operation():
@@ -168,7 +175,8 @@ def api():
 
 # ---- Run Operation tests -----------------------------------------------------
 
-@patch("src.operations.apply_similar.Config.load", return_value=FakeLLMConfig()) 
+
+@patch("src.operations.apply_similar.Config.load", return_value=FakeLLMConfig())
 @patch("src.mixins.get_resume_id")
 def test_run_initializes_dependencies(mock_resume, mock_config, operation, args, api):
     """Ensure run() builds LLMs, loads config, sets intervals, then calls _apply_similar()."""
@@ -182,6 +190,7 @@ def test_run_initializes_dependencies(mock_resume, mock_config, operation, args,
 
 
 # ---- Apply Similar -----------------------------------------------------------
+
 
 @patch("src.operations.apply_similar.get_chat")
 @patch("src.operations.apply_similar.BlockedVacanciesDB")
@@ -216,6 +225,7 @@ def test_apply_vacancy_skips_if_already_applied(operation, args, api, vacancy):
 
 # ---- Relevance Check ---------------------------------------------------------
 
+
 @patch("src.operations.apply_similar.BlockedVacanciesDB")
 def test_apply_vacancy_skips_if_not_relevant(db_mock, operation, args, api, vacancy):
     args.verify_relevance = True
@@ -248,15 +258,17 @@ def test_apply_vacancy_skips_if_not_relevant(db_mock, operation, args, api, vaca
 #         "vacancy_id": "123",
 #         "message": "Hello",
 #     })
-    
+
 
 # ---- Error Handling ----------------------------------------------------------
 class FakeResponse:
     status_code = 400
     text = "error"
+
     def json(self):
         return {}
-    
+
+
 # @patch("operations.apply_similar.get_chat")
 # @patch("src.operations.apply_similar.Config.load", return_value=FakeLLMConfig())
 # def test_apply_vacancy_handles_limit_exceeded(mock_chat, mock_config, operation, args, api, vacancy):
@@ -266,7 +278,8 @@ class FakeResponse:
 #     operation.resume_id = "R"
 
 #     operation.run(args, api)
-#     operation._send_apply = MagicMock(side_effect=LimitExceeded(response=FakeResponse, data={})) # pyright: ignore[reportArgumentType]
+#     operation._send_apply = MagicMock(
+# side_effect=LimitExceeded(response=FakeResponse, data={})) # pyright: ignore[reportArgumentType]
 #     assert operation._apply_vacancy(vacancy) is False
 
 
@@ -274,5 +287,6 @@ class FakeResponse:
 #     operation.api_client = api
 #     operation.resume_id = "R"
 #     operation.args = args
-#     operation._send_apply = MagicMock(side_effect=ApiError(response=FakeResponse, data={})) # pyright: ignore[reportArgumentType]
+#     operation._send_apply =
+# MagicMock(side_effect=ApiError(response=FakeResponse, data={})) # pyright: ignore[reportArgumentType]
 #     # assert operation._apply_vacancy(vacancy) is False

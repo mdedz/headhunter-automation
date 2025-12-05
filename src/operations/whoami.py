@@ -1,5 +1,4 @@
 import argparse
-import json
 import logging
 
 from ..api import HHApi
@@ -22,5 +21,5 @@ class Operation(BaseOperation):
     def run(self, args: Namespace, api_client: HHApi, _) -> None:
         result = api_client.me.get()
         print(
-            f"{result.last_name} {result.first_name} {result.middle_name}" 
+            f"{result.last_name} {result.first_name} {result.middle_name}"
         )

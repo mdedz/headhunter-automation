@@ -3,18 +3,19 @@ from __future__ import annotations
 import dataclasses
 import json
 import logging
-import uuid
-import time
-from dataclasses import dataclass
-from functools import partialmethod
-from threading import Lock
-from typing import Any, Literal
-from urllib.parse import urlencode
-from functools import cached_property
 import random
-from constants import ANDROID_CLIENT_ID, ANDROID_CLIENT_SECRET
+import time
+import uuid
+from dataclasses import dataclass
+from functools import cached_property
+from threading import Lock
+from typing import Any
+from urllib.parse import urlencode
+
 import requests
 from requests import Response, Session
+
+from constants import ANDROID_CLIENT_ID, ANDROID_CLIENT_SECRET
 from schemas import AccessToken
 
 from . import errors
@@ -75,7 +76,7 @@ class BaseClient:
         **kwargs: Any,
     ) -> dict:
         assert method in ALLOWED_METHODS
-        
+
         params = dict(params or {})
         params.update(kwargs)
         url = self.resolve_url(endpoint)
@@ -206,10 +207,10 @@ class ApiClient(BaseClient):
     client_secret: str = ANDROID_CLIENT_SECRET
     _: dataclasses.KW_ONLY
     base_url: str = "https://api.hh.ru/"
-    
+
     def __post_init__(self):
         super().__post_init__()
-    
+
     @property
     def is_access_expired(self) -> bool:
         return time.time() > self.access_expires_at
@@ -270,7 +271,17 @@ class ApiClient(BaseClient):
             "token_type": "bearer"
         }
 
-from api.hh_api.routes import BlacklistedEmployers, Me, Negotiations, MyResumes, NegotiationsMessages, PublishResume, SimilarVacancies, Vacancy
+from api.hh_api.routes import (
+    BlacklistedEmployers,
+    Me,
+    MyResumes,
+    Negotiations,
+    NegotiationsMessages,
+    PublishResume,
+    SimilarVacancies,
+    Vacancy,
+)
+
 
 class HHApi(ApiClient):
     blacklisted_employers: BlacklistedEmployers
@@ -281,10 +292,10 @@ class HHApi(ApiClient):
     similar_vacancies: SimilarVacancies
     negotiations_messages: NegotiationsMessages
     vacancy: Vacancy
-    
+
     def __post_init__(self) -> None:
         super().__post_init__()
-        
+
         self.blacklisted_employers = BlacklistedEmployers(self)
         self.negotiations = Negotiations(self)
         self.my_resumes = MyResumes(self)
@@ -293,4 +304,3 @@ class HHApi(ApiClient):
         self.similar_vacancies = SimilarVacancies(self)
         self.negotiations_messages = NegotiationsMessages(self)
         self.vacancy = Vacancy(self)
-        

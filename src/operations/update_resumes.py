@@ -1,7 +1,7 @@
 import argparse
 import logging
 
-from ..api import HHApi, ApiError
+from ..api import ApiError, HHApi
 from ..main import BaseOperation
 from ..main import Namespace as BaseNamespace
 from ..utils import print_err, truncate_string
@@ -23,8 +23,8 @@ class Operation(BaseOperation):
         resumes = api_client.my_resumes.get()
         for resume in resumes.items:
             try:
-                res = api_client.publish_resume.post(resume.id)
-                
+                api_client.publish_resume.post(resume.id)
+
                 print("✅ Обновлено", truncate_string(resume.title or "No title provided"))
             except ApiError as ex:
                 print_err("❗ Ошибка:", ex)

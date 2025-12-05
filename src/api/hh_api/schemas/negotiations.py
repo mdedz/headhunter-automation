@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 from api.hh_api.schemas.objects import SalaryRange
 
@@ -28,15 +28,15 @@ class NegotiationState:
 @dataclass
 class NegotiationTag:
     id: str
-  
-    
+
+
 @dataclass
 class Employer:
     id: str | None
     alternate_url: str | None
     name: str
-    
-    
+
+
 @dataclass
 class Vacancy:
     id: str
@@ -45,8 +45,8 @@ class Vacancy:
     employer: Employer | None
     salary_range: SalaryRange
     created_at: str
-        
-        
+
+
 class Resume:
     id: str
     title: str
@@ -71,7 +71,7 @@ class NegotiationItem:
     viewed_by_opponent: bool
     vacancy: Vacancy | None
     resume: Resume | None
-    
+
 
 # GET https://api.hh.ru/negotiations
 @dataclass

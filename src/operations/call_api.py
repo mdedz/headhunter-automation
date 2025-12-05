@@ -5,8 +5,7 @@ import logging
 import sys
 
 from api.client import ALLOWED_METHODS
-
-from src.api import HHApi, ApiError
+from src.api import ApiError, HHApi
 from src.main import BaseOperation
 from src.main import Namespace as BaseNamespace
 
@@ -38,9 +37,9 @@ class Operation(BaseOperation):
         try:
             method = args.method
             assert method in ALLOWED_METHODS
-            
+
             result = api_client.request(method, args.endpoint, params=params)
             print(json.dumps(result, ensure_ascii=False))
         except ApiError as ex:
             json.dump(ex.data, sys.stderr, ensure_ascii=False)
-            
+

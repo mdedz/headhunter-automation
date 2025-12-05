@@ -1,10 +1,9 @@
-from abc import abstractmethod
 import argparse
 import logging
+from abc import abstractmethod
 from typing import Any, List, TextIO
 
 from api.hh_api.schemas.similar_vacancies import VacancyItem
-
 from src.api.client import HHApi
 
 from ...main import BaseOperation
@@ -280,7 +279,7 @@ class OperationBase(BaseOperation):
         self, args: Namespace, api_client: HHApi
     ) -> None:
         pass
-    
+
     @staticmethod
     @abstractmethod
     def _get_application_messages(message_list: TextIO | None = None) -> list[str]:
@@ -289,7 +288,7 @@ class OperationBase(BaseOperation):
     @abstractmethod
     def _apply_similar(self) -> None:
         pass
-    
+
     @abstractmethod
     def _get_vacancies(self, per_page: int = 100) -> list[VacancyItem]:
         pass
