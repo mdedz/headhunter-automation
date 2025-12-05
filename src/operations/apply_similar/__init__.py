@@ -66,7 +66,7 @@ class Operation(base.OperationBase):
                 if db.is_in_list(vacancy.id): 
                     print("Skipping vacancy cause it is in blocked list: %s", vacancy.name)
                     continue
-                
+            
             self._apply_vacancy(vacancy)
 
         print("📝 Отклики на вакансии разосланы!")
@@ -76,6 +76,7 @@ class Operation(base.OperationBase):
         True: Successfully applied to vacancy
         False: Did not apply to vacancy 
         """
+        
         if vacancy.has_test:
             logger.debug(
                 "Пропускаем вакансию с тестом: %s",
@@ -99,7 +100,6 @@ class Operation(base.OperationBase):
                 vacancy.alternate_url,
             )
             return False
-        
         if self.args.verify_relevance:
             relevance_result = self.vacancy_relevance_llm.verify(vacancy)
             if not relevance_result: 
@@ -115,6 +115,7 @@ class Operation(base.OperationBase):
                 return False
         
         try:
+            
             self._send_apply(vacancy)
             return True
         except LimitExceeded:
@@ -128,15 +129,16 @@ class Operation(base.OperationBase):
         """
         Generates cover letter for vacancy(if needed) and send the apply 
         """
+        logger.error("send apply %s %s", 
+                    self.args.force_message,
+                    self.args.use_ai
+                    )
+
         params = {
             "resume_id": self.resume_id,
             "vacancy_id": vacancy.id,
             "message": "",
         }
-        logger.debug("send apply %s %s", 
-                    self.args.force_message,
-                    self.args.use_ai
-                    )
         
         if self.args.force_message or vacancy.response_letter_required:
             if self.args.use_ai:
