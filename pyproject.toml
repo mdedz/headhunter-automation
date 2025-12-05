@@ -23,6 +23,7 @@ pylint = "^4.0.4"
 pytest = "^9.0.1"
 ruff = "^0.14.8"
 mypy = "^1.19.0"
+pytest-cov = "^7.0.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -32,16 +33,14 @@ build-backend = "poetry.core.masonry.api"
 headhunter-automation = "src.main:main"
 
 [tool.pyright]
-typeCheckingMode = "standard"        
+typeCheckingMode = "standard"
 exclude = [".venv", "**/__pycache__"]
 
 [tool.ruff]
-select = ["E", "F", "I", "W"] 
+select = ["E", "F", "I", "W"]
 ignore = ["E203"]
-line-length = 120 
-per-file-ignores = { "__init__.py" = [
-    "F401",
-] } 
+line-length = 120
+per-file-ignores = { "__init__.py" = ["F401"] }
 
 [tool.mypy]
 python_version = "3.10"

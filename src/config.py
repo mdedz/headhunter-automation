@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import tomllib
 from dataclasses import dataclass, field, fields, is_dataclass
 from pathlib import Path
 from typing import Any, Optional, Union, get_type_hints
+
+import tomllib
 
 
 @dataclass
