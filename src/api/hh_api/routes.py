@@ -42,10 +42,9 @@ class Negotiations(BaseEndpoint):
 
         return data == []
 
-    def delete(self, item_id: str, *args, **kwargs) -> DeleteNegotiationsResponse:
+    def delete(self, item_id: str, *args, **kwargs) -> bool:
         data = self.client.delete(f"/negotiations/active/{item_id}", *args, **kwargs)
-
-        return from_dict(DeleteNegotiationsResponse, data)
+        return data == {}
 
 
 class NegotiationsMessages(BaseEndpoint):
@@ -64,7 +63,6 @@ class NegotiationsMessages(BaseEndpoint):
         _ = self.client.post(f"/negotiations/{nid}/messages", *args, **kwargs)
 
         return True
-
 
 
 class MyResumes(BaseEndpoint):
