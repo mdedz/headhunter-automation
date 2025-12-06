@@ -4,7 +4,6 @@ import datetime
 from datetime import timedelta
 from typing import List
 
-from api.hh_api.schemas.blacklisted_employers import PutBlacklistedEmployersResponse
 from api.hh_api.schemas.negotiations import (
     Employer,
     GetNegotiationsListResponse,
@@ -13,11 +12,11 @@ from api.hh_api.schemas.negotiations import (
     Vacancy,
 )
 
-from api import ClientError, HHApi
+from api import HHApi
 from constants import INVALID_ISO8601_FORMAT
 from main import BaseOperation
 from main import Namespace as BaseNamespace
-from utils import print_err, truncate_string
+from utils import truncate_string
 from tqdm import tqdm
 
 logger = logging.getLogger(__package__)

@@ -46,9 +46,6 @@ def mock_config():
     return FakeLLMConfig()
 
 
-# ---- Fixtures ----------------------------------------------------------------
-
-
 @pytest.fixture
 def args() -> SimpleNamespace:
     """Mock for Namespace dataclass with all required attributes."""
@@ -173,9 +170,6 @@ def api():
     return api
 
 
-# ---- Run Operation tests -----------------------------------------------------
-
-
 @patch("src.operations.apply_similar.Config.load", return_value=FakeLLMConfig())
 @patch("src.mixins.get_resume_id")
 def test_run_initializes_dependencies(mock_resume, mock_config, operation, args, api):
@@ -187,9 +181,6 @@ def test_run_initializes_dependencies(mock_resume, mock_config, operation, args,
 
     assert operation._apply_similar.called
     assert operation.resume_id == "RESUME123"
-
-
-# ---- Apply Similar -----------------------------------------------------------
 
 
 @patch("src.operations.apply_similar.get_chat")
@@ -207,7 +198,6 @@ def test_apply_similar_calls_apply_vacancy(mock_chat, db_mock, mock_config, oper
     operation._apply_vacancy.assert_called_once_with(vacancy)
 
 
-# ---- Apply Vacancy -----------------------------------------------------------
 def test_apply_vacancy_skips_if_archived(operation, args, api, vacancy, mock_config):
     vacancy.archived = True
     assert operation._apply_vacancy(vacancy) is False
@@ -223,9 +213,6 @@ def test_apply_vacancy_skips_if_already_applied(operation, args, api, vacancy):
     assert operation._apply_vacancy(vacancy) is False
 
 
-# ---- Relevance Check ---------------------------------------------------------
-
-
 @patch("src.operations.apply_similar.BlockedVacanciesDB")
 def test_apply_vacancy_skips_if_not_relevant(db_mock, operation, args, api, vacancy):
     args.verify_relevance = True
@@ -238,7 +225,6 @@ def test_apply_vacancy_skips_if_not_relevant(db_mock, operation, args, api, vaca
     operation.vacancy_relevance_llm.verify.assert_called_once()
 
 
-# ---- Send Apply --------------------------------------------------------------
 
 # @patch("src.operations.apply_similar.random.uniform", lambda *_: 0)
 # @patch("src.operations.apply_similar.time.sleep", lambda _: None)
@@ -259,15 +245,12 @@ def test_apply_vacancy_skips_if_not_relevant(db_mock, operation, args, api, vaca
 #         "message": "Hello",
 #     })
 
+# class FakeResponse:
+#     status_code = 400
+#     text = "error"
 
-# ---- Error Handling ----------------------------------------------------------
-class FakeResponse:
-    status_code = 400
-    text = "error"
-
-    def json(self):
-        return {}
-
+#     def json(self):
+#         return {}
 
 # @patch("operations.apply_similar.get_chat")
 # @patch("src.operations.apply_similar.Config.load", return_value=FakeLLMConfig())
