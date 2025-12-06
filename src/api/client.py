@@ -90,10 +90,10 @@ class BaseClient:
                 time.sleep(delay)
             has_body = method in ["POST", "PUT"]
             payload = {"data" if has_body else "params": params}
-            response = self.session.request(
+            response = self.session.request( # pyright: ignore[reportOptionalMemberAccess]
                 method,
                 url,
-                **payload, # type: ignore
+                **payload,  # pyright: ignore[reportArgumentType]
                 proxies=self.proxies,
                 allow_redirects=False,
             )

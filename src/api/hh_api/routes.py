@@ -65,7 +65,6 @@ class NegotiationsMessages(BaseEndpoint):
         return True
 
 
-
 class MyResumes(BaseEndpoint):
     """
     GET: https://api.hh.ru/resumes/mine
