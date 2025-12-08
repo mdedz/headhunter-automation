@@ -5,7 +5,7 @@ description = ""
 authors = ["Mdedz <ilya.business.contact77@gmail.com>"]
 packages = [{ include = "*", from = "src" }]
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.12"
 requests = { extras = ["socks"], version = "^2.32.3" }
 prettytable = "^3.6.0"
 pyqt6 = { version = "6.7.0", optional = true }
@@ -13,16 +13,16 @@ pyqt6-webengine = { version = "6.7.0", optional = true }
 groq = "^0.37.1"
 dacite = "^1.9.1"
 beautifulsoup4 = "^4.14.3"
-
-[tool.poetry.extras]
-qt = ["pyqt6", "pyqt6-webengine"]
+tqdm = "^4.67.1"
+prompt_toolkit = "^3.0.52"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^7.0.0"
 pylint = "^4.0.4"
-pytest = "^9.0.1"
+pytest = "^9.0.2"
 ruff = "^0.14.8"
 mypy = "^1.19.0"
+pytest-cov = "^7.0.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -32,19 +32,17 @@ build-backend = "poetry.core.masonry.api"
 headhunter-automation = "src.main:main"
 
 [tool.pyright]
-typeCheckingMode = "standard"        
+typeCheckingMode = "standard"
 exclude = [".venv", "**/__pycache__"]
 
 [tool.ruff]
-select = ["E", "F", "I", "W"] 
+select = ["E", "F", "I", "W"]
 ignore = ["E203"]
-line-length = 120 
-per-file-ignores = { "__init__.py" = [
-    "F401",
-] } 
+line-length = 120
+per-file-ignores = { "__init__.py" = ["F401"] }
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 strict = true
 ignore_missing_imports = false
 disallow_untyped_defs = true

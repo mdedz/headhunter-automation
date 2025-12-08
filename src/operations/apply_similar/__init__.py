@@ -1,6 +1,7 @@
 import logging
 import random
 import time
+from typing import List
 
 from api import ApiError, HHApi
 from api.errors import LimitExceeded
@@ -9,43 +10,39 @@ from mixins import get_resume_id
 from operations.apply_similar.utils import get_chat
 from operations.apply_similar.utils.negotiations import NegotiationsLLM, NegotiationsLocal
 from operations.apply_similar.utils.vacancy_relevance import VacancyRelevanceLLM
-from utils import BlockedVacanciesDB, truncate_string
 from src.config import Config
 from src.operations.apply_similar import base
-from typing import List
+from utils import BlockedVacanciesDB, truncate_string
 
 logger = logging.getLogger(__package__)
 
 class Operation(base.OperationBase):
-    """Reply to all relevant vacancies.
+    """Reply to all relevant vacancies."""
 
-    The description of filters u can find here: <https://api.hh.ru/openapi/redoc#tag/Poisk-vakansij-dlya-soiskatelya/operation/get-vacancies-similar-to-resume>
-    """
-    
     def run(
         self, args: base.Namespace, api_client: HHApi
     ) -> None:
         self.args: base.Namespace = args
         self.config = Config.load(args.config_path)
-        
+
         self.api_client = api_client
         self.resume_id = args.resume_id or get_resume_id(api_client)
         self.application_messages = self._get_application_messages(args.message_list)
-        
+
         if self.args.use_ai:
             negotiations_chat = get_chat(
-                self.config.llm.cover_letters.prompts, 
+                self.config.llm.cover_letters.prompts,
                 self.config.llm.cover_letters.options,
                 self.config.candidate
                 )
-            
+
             self.negotiations_llm = NegotiationsLLM(negotiations_chat)
         else:
             self.negotiations_chat = NegotiationsLocal()
-            
-        if self.args.verify_relevance: 
+
+        if self.args.verify_relevance:
             vacancy_relevance_chat = get_chat(
-                self.config.llm.verify_relevance.prompts, 
+                self.config.llm.verify_relevance.prompts,
                 self.config.llm.verify_relevance.options,
                 self.config.candidate
                 )
@@ -61,12 +58,12 @@ class Operation(base.OperationBase):
         vacancies = self._get_vacancies()
 
         for vacancy in vacancies:
-            if self.args.block_irrelevant: 
+            if self.args.block_irrelevant:
                 db = BlockedVacanciesDB()
-                if db.is_in_list(vacancy.id): 
+                if db.is_in_list(vacancy.id):
                     print("Skipping vacancy cause it is in blocked list: %s", vacancy.name)
                     continue
-                
+
             self._apply_vacancy(vacancy)
 
         print("📝 Отклики на вакансии разосланы!")
@@ -76,6 +73,7 @@ class Operation(base.OperationBase):
         True: Successfully applied to vacancy
         False: Did not apply to vacancy 
         """
+
         if vacancy.has_test:
             logger.debug(
                 "Пропускаем вакансию с тестом: %s",
@@ -89,7 +87,7 @@ class Operation(base.OperationBase):
                 vacancy.alternate_url,
             )
             return False
-        
+
         relations = vacancy.relations
         employer_id = vacancy.employer.id
 
@@ -99,22 +97,22 @@ class Operation(base.OperationBase):
                 vacancy.alternate_url,
             )
             return False
-        
         if self.args.verify_relevance:
             relevance_result = self.vacancy_relevance_llm.verify(vacancy)
-            if not relevance_result: 
+            if not relevance_result:
                 print(
-                    "Skipping vacancy cause it is not relevant to candidate: %s %s", 
+                    "Skipping vacancy cause it is not relevant to candidate: %s %s",
                     vacancy.name,
                     vacancy.apply_alternate_url
                 )
-                
+
                 db = BlockedVacanciesDB()
                 db.add(vacancy.id)
-                
+
                 return False
-        
+
         try:
+
             self._send_apply(vacancy)
             return True
         except LimitExceeded:
@@ -128,6 +126,11 @@ class Operation(base.OperationBase):
         """
         Generates cover letter for vacancy(if needed) and send the apply 
         """
+        logger.error("send apply %s %s",
+                    self.args.force_message,
+                    self.args.use_ai
+                    )
+
         params = {
             "resume_id": self.resume_id,
             "vacancy_id": vacancy.id,
@@ -142,13 +145,12 @@ class Operation(base.OperationBase):
                     vacancy_full,
                     self.config.llm.cover_letters.messages.footer_msg
                 )
-                
                 if not msg: return
             else:
                 me_info = self.api_client.me.get()
-                
+
                 msg = self.negotiations_chat.get_msg(me_info, vacancy)
-                
+
             params["message"] = msg
 
         if self.args.dry_run:
@@ -165,7 +167,7 @@ class Operation(base.OperationBase):
         time.sleep(interval)
 
         res = self.api_client.negotiations.post(params)
-        
+
         print(
             "📨 Отправили отклик",
             vacancy.alternate_url,
@@ -184,7 +186,7 @@ class Operation(base.OperationBase):
                 self.resume_id,
                 params
                 )
-            
+
             rv.extend(vacancies.items)
             if page >= vacancies.pages - 1:
                 break

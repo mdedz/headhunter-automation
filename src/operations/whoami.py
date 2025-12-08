@@ -1,5 +1,4 @@
 import argparse
-import json
 import logging
 
 from ..api import HHApi
@@ -19,8 +18,8 @@ class Operation(BaseOperation):
     def setup_parser(self, parser: argparse.ArgumentParser) -> None:
         pass
 
-    def run(self, args: Namespace, api_client: HHApi, _) -> None:
+    def run(self, args: Namespace, api_client: HHApi, *_args, **_kwargs) -> None:
         result = api_client.me.get()
         print(
-            f"{result.last_name} {result.first_name} {result.middle_name}" 
+            f"{result.last_name} {result.first_name} {result.middle_name or ""}"
         )

@@ -1,6 +1,7 @@
 import argparse
 import logging
 from typing import Any
+
 from ..api import ApiError, HHApi
 from ..main import BaseOperation
 from ..main import Namespace as BaseNamespace

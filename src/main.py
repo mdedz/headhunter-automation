@@ -11,9 +11,10 @@ from typing import Literal, Sequence
 
 from src.config import Config
 
-from .api import HHApi
-from .color_log import ColorHandler
-from .utils import Data, get_config_path
+from src.api import HHApi
+from src.color_log import ColorHandler
+from src.utils import Data
+from src.argparse import CustomHelpFormatter
 
 logger = logging.getLogger(__package__)
 
@@ -46,13 +47,14 @@ def get_proxies(args: Namespace) -> dict[Literal["http", "https"], str | None]:
 
 
 def get_api_client(args: Namespace) -> HHApi:
-    token = args.data.get("token", {})
+    data = Data(args.data_path)
+    token = data.get("token", {})
     api = HHApi(
         access_token=token.get("access_token"),
         refresh_token=token.get("refresh_token"),
         access_expires_at=token.get("access_expires_at"),
         delay=args.delay,
-        user_agent=args.data["user_agent"],
+        user_agent=data["user_agent"],
         proxies=get_proxies(args),
     )
     return api
@@ -67,66 +69,50 @@ class HHApplicantTool:
 
     def create_parser(self) -> argparse.ArgumentParser:
         parser = argparse.ArgumentParser(
-            description=self.__doc__,
-            formatter_class=self.ArgumentFormatter,
+            prog="headhunter-automation",
+            description=(
+                "HH Applicant Automation Tool. "
+                "Автоматизация откликов, обновления резюме и работы с API HeadHunter.\n"
+            ),
+            formatter_class=CustomHelpFormatter,
+            add_help=False,  
         )
-        parser.add_argument(
-            "-c",
-            "--config-path",
-            help="Config file path",
-            default="config/config.toml",
-        )
-        parser.add_argument(
-            "-data",
-            "--data",
-            help="Data file path",
-            type=Data,
-            default=Data(),
-        )
-        parser.add_argument(
-            "-v",
-            "--verbosity",
-            help="При использовании от одного и более раз увеличивает количество отладочной информации в выводе",
-            action="count",
-            default=0,
-        )
-        parser.add_argument(
-            "-d",
-            "--delay",
-            type=float,
-            default=0.334,
-            help="Задержка между запросами к API HH",
-        )
-        parser.add_argument(
-            "--user-agent", 
-            help="User-Agent для каждого запроса"
-        )
-        parser.add_argument(
-            "--proxy-url", help="Прокси, используемый для запросов к API"
-        )
-        subparsers = parser.add_subparsers(help="commands")
+        group = parser.add_argument_group("Global options")
+        group.add_argument("-h", "--help", action="help", help="Show this help message and exit")
+        group.add_argument("--config-path", type=str, help="Config file path", default="config/config.toml")
+        group.add_argument("--data-path", type=str, help="Data file path")
+        group.add_argument("-v", "--verbosity", 
+                           help="Уровень отладочной информации в выводе [Нет: WARNING, -v: INFO, -vv: DEBUG]", 
+                           action="count", default=0
+                           )
+        group.add_argument("-d", "--delay", type=float, default=0.334, help="Задержка между запросами к API HH")
+        group.add_argument("--user-agent", type=str, help="User-Agent для каждого запроса")
+        group.add_argument("--proxy-url", type=str, help="Прокси, используемый для запросов к API")
+        
+        subparsers = parser.add_subparsers(help="commands", dest="command", metavar="")
+        
         package_dir = Path(__file__).resolve().parent / OPERATIONS
         for _, module_name, _ in iter_modules([str(package_dir)]):
             mod = import_module(f"{__package__}.{OPERATIONS}.{module_name}")
             op: BaseOperation = mod.Operation()
+
             op_parser = subparsers.add_parser(
                 module_name.replace("_", "-"),
-                description=op.__doc__,
-                formatter_class=self.ArgumentFormatter,
+                help=(op.__doc__.strip() if op.__doc__ else ""),
+                formatter_class=CustomHelpFormatter,
             )
             op_parser.set_defaults(run=op.run)
             op.setup_parser(op_parser)
-        parser.set_defaults(run=None)
+
         return parser
 
     def run(self, argv: Sequence[str] | None) -> None | int:
         parser = self.create_parser()
         args = parser.parse_args(argv, namespace=Namespace())
-        #TODO: Test
-        # log_level = max(logging.DEBUG, logging.WARNING - args.verbosity * 10)
-        logger.setLevel(logging.ERROR)
+        log_level = max(logging.DEBUG, logging.WARNING - args.verbosity * 10)
+        logger.setLevel(log_level)
         handler = ColorHandler()
-        
+
         handler.setFormatter(logging.Formatter("[%(levelname).1s] %(message)s"))
         logger.addHandler(handler)
         if args.run:
@@ -135,8 +121,9 @@ class HHApplicantTool:
 
                 # 0 or None = success
                 res = args.run(args, api_client)
-                if (token := api_client.get_access_token()) != args.data["token"]:
-                    args.data.save(token=token)
+                data = Data(args.data_path)
+                if (token := api_client.get_access_token()) != data["token"]:
+                    data.save(token=token)
                 return res
             except KeyboardInterrupt:
                 logger.warning("Interrupted by user")

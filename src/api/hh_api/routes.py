@@ -1,12 +1,14 @@
+from dacite import from_dict
+
 from api.hh_api.base import BaseEndpoint
 from api.hh_api.schemas.blacklisted_employers import GetBlacklistedEmployersResponse, PutBlacklistedEmployersResponse
 from api.hh_api.schemas.me import MeResponse
-from api.hh_api.schemas.negotiations import DeleteNegotiationsResponse, GetNegotiationsListResponse
 from api.hh_api.schemas.my_resumes import GetResumesResponse
+from api.hh_api.schemas.negotiations import DeleteNegotiationsResponse, GetNegotiationsListResponse
 from api.hh_api.schemas.negotiations_messages import GetNegotiationsMessagesResponse
 from api.hh_api.schemas.similar_vacancies import SimilarVacanciesResponse
 from api.hh_api.schemas.vacancy import VacancyFull
-from dacite import from_dict
+
 
 class BlacklistedEmployers(BaseEndpoint):
     """
@@ -34,16 +36,15 @@ class Negotiations(BaseEndpoint):
         data = self.client.get("/negotiations", *args, **kwargs)
 
         return from_dict(GetNegotiationsListResponse, data)
-    
+
     def post(self, *args, **kwargs) -> bool:
-        data = self.client.post(f"/negotiations/", *args, **kwargs)
+        data = self.client.post("/negotiations/", *args, **kwargs)
 
         return data == []
 
-    def delete(self, item_id: str, *args, **kwargs) -> DeleteNegotiationsResponse:
+    def delete(self, item_id: str, *args, **kwargs) -> bool:
         data = self.client.delete(f"/negotiations/active/{item_id}", *args, **kwargs)
-
-        return from_dict(DeleteNegotiationsResponse, data)
+        return data == {}
 
 
 class NegotiationsMessages(BaseEndpoint):
@@ -55,14 +56,13 @@ class NegotiationsMessages(BaseEndpoint):
         data = self.client.get(f"/negotiations/{nid}/messages", *args, **kwargs)
 
         return from_dict(GetNegotiationsMessagesResponse, data)
-    
+
     def post(self, nid: str, *args, **kwargs) -> bool:
         """this method is supposed to return a huuuge response but we don't need to define it yet so let's leave it blank for now"""
         #TODO: One day, I'll define the response
         _ = self.client.post(f"/negotiations/{nid}/messages", *args, **kwargs)
 
         return True
-        
 
 
 class MyResumes(BaseEndpoint):
@@ -88,10 +88,10 @@ class Me(BaseEndpoint):
     GET: https://api.hh.ru/me
     """
     def get(self, *args, **kwargs) -> MeResponse:
-        data = self.client.get(f"/me", *args, **kwargs)
+        data = self.client.get("/me", *args, **kwargs)
 
         return from_dict(MeResponse, data)
-    
+
 class SimilarVacancies(BaseEndpoint):
     """
     GET: https://api.hh.ru/resumes/{resume_id}/similar_vacancies
@@ -100,8 +100,8 @@ class SimilarVacancies(BaseEndpoint):
         data = self.client.get(f"/resumes/{resume_id}/similar_vacancies", *args, **kwargs)
 
         return from_dict(SimilarVacanciesResponse, data)
-    
-    
+
+
 class Vacancy(BaseEndpoint):
     """
     GET: https://api.hh.ru/vacancies/{vacancy_id}
@@ -110,4 +110,3 @@ class Vacancy(BaseEndpoint):
         data = self.client.get(f"/vacancies/{vacancy_id}", *args, **kwargs)
 
         return from_dict(VacancyFull, data)
-    

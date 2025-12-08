@@ -5,10 +5,9 @@ import logging
 import sys
 
 from api.client import ALLOWED_METHODS
-
-from ..api import HHApi, ApiError
-from ..main import BaseOperation
-from ..main import Namespace as BaseNamespace
+from src.api import ApiError, HHApi
+from src.main import BaseOperation
+from src.main import Namespace as BaseNamespace
 
 logger = logging.getLogger(__package__)
 
@@ -21,6 +20,7 @@ class Namespace(BaseNamespace):
 
 
 class Operation(BaseOperation):
+    """Send custom API request to headhunter"""
     def setup_parser(self, parser: argparse.ArgumentParser) -> None:
         parser.add_argument("endpoint", help="Путь до эндпоинта API")
         parser.add_argument(
@@ -38,9 +38,9 @@ class Operation(BaseOperation):
         try:
             method = args.method
             assert method in ALLOWED_METHODS
-            
+
             result = api_client.request(method, args.endpoint, params=params)
             print(json.dumps(result, ensure_ascii=False))
         except ApiError as ex:
             json.dump(ex.data, sys.stderr, ensure_ascii=False)
-            
+

@@ -1,4 +1,5 @@
 import logging
+
 from ai import LLMFactory
 from ai.base import ModelConfig, Prompts
 from config import Candidate, LLMOptions, LLMPrompts
@@ -13,11 +14,11 @@ def get_chat(cfg_prompts: LLMPrompts, options: LLMOptions, candidate: Candidate)
         options.max_tokens,
         options.top_p,
         )
-    
-    system_prompt = cfg_prompts.system + "\n" + candidate.info 
-    
+
+    system_prompt = cfg_prompts.system + "\n" + candidate.info
+
     prompts = Prompts(
         system_prompt
     )
-    
+
     return LLMFactory.create(options.provider, cfg, prompts)

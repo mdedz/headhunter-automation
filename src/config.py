@@ -1,14 +1,15 @@
 from __future__ import annotations
-from dataclasses import dataclass, fields, is_dataclass
+
+from dataclasses import dataclass, field, fields, is_dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union, get_type_hints
+
 import tomllib
-from dataclasses import dataclass, field
-from typing import get_type_hints
+
 
 @dataclass
 class Proxy:
-    proxy_url: str = "" 
+    proxy_url: str = ""
 
 @dataclass
 class Candidate:
@@ -44,10 +45,16 @@ class VerifyRelevance:
     prompts: LLMPrompts = field(default_factory=LLMPrompts)
 
 @dataclass
+class ChatReply:
+    options: LLMOptions = field(default_factory=LLMOptions)
+    prompts: LLMPrompts = field(default_factory=LLMPrompts)
+
+@dataclass
 class LLMConfig:
     cover_letters: CoverLetters = field(default_factory=CoverLetters)
     verify_relevance: VerifyRelevance = field(default_factory=VerifyRelevance)
-
+    chat_reply: ChatReply = field(default_factory=ChatReply)
+    
 @dataclass
 class Config:
     llm: LLMConfig = field(default_factory=LLMConfig)

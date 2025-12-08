@@ -1,10 +1,9 @@
-from abc import abstractmethod
 import argparse
 import logging
-from typing import Any, TextIO
+from abc import abstractmethod
+from typing import Any, List, TextIO
 
 from api.hh_api.schemas.similar_vacancies import VacancyItem
-
 from src.api.client import HHApi
 
 from ...main import BaseOperation
@@ -30,7 +29,7 @@ class Namespace(BaseNamespace):
     search: str
     schedule: str
     dry_run: bool
-    
+    search_field: List[str]
     experience: str
     employment: list[str] | None
     area: list[str] | None
@@ -54,7 +53,7 @@ class Namespace(BaseNamespace):
     sort_point_lng: float | None
     no_magic: bool
     premium: bool
-
+    clusters: bool
 
 def _bool(v: bool) -> str:
     return str(v).lower()
@@ -75,7 +74,6 @@ class OperationBase(BaseOperation):
         )
         parser.add_argument(
             "-f",
-            "--force-message",
             "--force",
             help="Всегда отправлять сообщение при отклике",
             default=False,
@@ -94,14 +92,12 @@ class OperationBase(BaseOperation):
             action=argparse.BooleanOptionalAction,
         )
         parser.add_argument(
-            "--use-ai",
             "--ai",
             help="Использовать AI для генерации сообщений",
             default=False,
             action=argparse.BooleanOptionalAction,
         )
         parser.add_argument(
-            "--pre-prompt",
             "--prompt",
             help="Добавочный промпт для генерации сопроводительного письма",
             default="Сгенерируй сопроводительное письмо не более 5-7 предложений от моего имени для вакансии",
@@ -280,7 +276,7 @@ class OperationBase(BaseOperation):
         self, args: Namespace, api_client: HHApi
     ) -> None:
         pass
-    
+
     @staticmethod
     @abstractmethod
     def _get_application_messages(message_list: TextIO | None = None) -> list[str]:
@@ -289,7 +285,7 @@ class OperationBase(BaseOperation):
     @abstractmethod
     def _apply_similar(self) -> None:
         pass
-    
+
     @abstractmethod
     def _get_vacancies(self, per_page: int = 100) -> list[VacancyItem]:
         pass

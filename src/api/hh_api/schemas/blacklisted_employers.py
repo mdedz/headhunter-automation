@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import List, Optional
 
 
 # GET https://api.hh.ru/employers/blacklisted
@@ -29,8 +29,8 @@ class GetBlacklistedEmployersResponse:
     page: int
     pages: int
     per_page: int
-    
-    
+
+
 @dataclass
 class PutBlacklistedEmployersError:
     type: str

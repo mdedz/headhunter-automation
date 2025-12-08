@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 from api.hh_api.schemas.objects import SalaryRange
 
@@ -8,19 +8,19 @@ from api.hh_api.schemas.objects import SalaryRange
 class Employer:
     id: str | None
     name: str
-    
-    
+
+
 @dataclass
 class Snippet:
     requirement: str | None
     responsibility: str | None
-    
+
 @dataclass
 class Experience:
     id: str | None
     name: str | None
-    
-    
+
+
 @dataclass
 class VacancyItem:
     address: dict | None
@@ -35,7 +35,7 @@ class VacancyItem:
     id: str
     insider_interview: dict | None
     name: str
-    professional_roles: list 
+    professional_roles: list
     published_at: str
     relations: list
     response_letter_required: bool
@@ -49,7 +49,7 @@ class VacancyItem:
     archived: bool | None
 
 # GET https://api.hh.ru/resumes/{resume_id}/similar_vacancies
-    
+
 @dataclass
 class SimilarVacanciesResponse:
     items: List[VacancyItem]
