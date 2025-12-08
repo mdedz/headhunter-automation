@@ -28,7 +28,6 @@ class Namespace(BaseNamespace):
     order_by: str
     search: str
     schedule: str
-    dry_run: bool
     search_field: List[str]
     experience: str
     employment: list[str] | None
@@ -74,6 +73,7 @@ class OperationBase(BaseOperation):
         )
         parser.add_argument(
             "-f",
+            "--force-message",
             "--force",
             help="Всегда отправлять сообщение при отклике",
             default=False,
@@ -92,6 +92,7 @@ class OperationBase(BaseOperation):
             action=argparse.BooleanOptionalAction,
         )
         parser.add_argument(
+            "--use-ai",
             "--ai",
             help="Использовать AI для генерации сообщений",
             default=False,
@@ -138,12 +139,6 @@ class OperationBase(BaseOperation):
             help="Тип графика. Возможные значения: fullDay, shift, flexible, remote, flyInFlyOut для полного дня, сменного графика, гибкого графика, удаленной работы и вахтового метода",
             type=str,
             default=None,
-        )
-        parser.add_argument(
-            "--dry-run",
-            help="Не отправлять отклики, а только выводить параметры запроса",
-            default=False,
-            action=argparse.BooleanOptionalAction,
         )
         parser.add_argument(
             "--experience",

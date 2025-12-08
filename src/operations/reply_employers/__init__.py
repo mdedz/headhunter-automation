@@ -32,7 +32,6 @@ class Namespace(BaseNamespace):
     reply_interval: Tuple[float, float]
     max_pages: int
     only_invitations: bool
-    dry_run: bool
 
 
 class Operation(BaseOperation):
@@ -68,14 +67,6 @@ class Operation(BaseOperation):
             action=argparse.BooleanOptionalAction,
         )
 
-        parser.add_argument(
-            "--dry-run",
-            "--dry",
-            help="Не отправлять сообщения, а только выводить параметры запроса",
-            default=False,
-            action=argparse.BooleanOptionalAction,
-        )
-
     def run(
         self, args: Namespace, api_client: HHApi
     ) -> None:
@@ -88,7 +79,6 @@ class Operation(BaseOperation):
         self.reply_message = args.reply_message or ""
         # assert self.reply_message, "`reply_message` must be defined in settings or args"
         self.max_pages = args.max_pages
-        self.dry_run = args.dry_run
         self.only_invitations = args.only_invitations
         logger.debug(f"{self.reply_message = }")
         self._reply_chats()

@@ -202,7 +202,6 @@ poetry run headhunter-automation apply-similar --resume-id <ID>
 | `--ai`               | Генерация текста отклика через ИИ           |
 | `--verify-relevance` | Проверка релевантности вакансии LLM-моделью |
 | `--prompt`           | Ваш индивидуальный стиль сообщения          |
-| `--dry-run`          | Ничего не отправляет, только показывает     |
 
 ---
 

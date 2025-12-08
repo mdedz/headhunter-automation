@@ -126,11 +126,6 @@ class Operation(base.OperationBase):
         """
         Generates cover letter for vacancy(if needed) and send the apply 
         """
-        logger.error("send apply %s %s",
-                    self.args.force_message,
-                    self.args.use_ai
-                    )
-
         params = {
             "resume_id": self.resume_id,
             "vacancy_id": vacancy.id,
@@ -152,14 +147,6 @@ class Operation(base.OperationBase):
                 msg = self.negotiations_chat.get_msg(me_info, vacancy)
 
             params["message"] = msg
-
-        if self.args.dry_run:
-            logger.info(
-                "Dry Run: Отправка отклика на вакансию %s с параметрами: %s",
-                vacancy.alternate_url,
-                params,
-            )
-            return
 
         interval = random.uniform(
             self.apply_min_interval, self.apply_max_interval

@@ -68,7 +68,6 @@ def args() -> SimpleNamespace:
         order_by="ORDER_BY",
         search="SEARCH",
         schedule="SCHEDULE",
-        dry_run=False,
         search_field=["SEARCH_FIELD"],
         experience="",
         employment=None,
