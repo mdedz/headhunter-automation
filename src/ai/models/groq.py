@@ -17,6 +17,8 @@ class GroqLLM(BaseLLM):
         self.client = Groq(api_key=cfg.api_key)
 
     def send_message(self, user_message: str, verify_tag_end: bool = False) -> str:
+        if verify_tag_end:
+            user_message += "\nПожалуйста, пометь конец письма тегом <END>."
         try:
             messages = [{"role": "system", "content": self.prompts.system}, {"role": "user", "content": user_message}]
 
