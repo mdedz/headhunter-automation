@@ -10,6 +10,7 @@ from api.hh_api.schemas.me import MeResponse
 from api.hh_api.schemas.similar_vacancies import VacancyItem
 from api.hh_api.schemas.vacancy import VacancyFull
 from utils import random_text
+from config import DefaultCoverLetter
 
 logger = logging.getLogger(__package__)
 
@@ -65,29 +66,13 @@ class NegotiationsLLM:
         return msg
 
 
+@dataclass
 class NegotiationsLocal:
-    def get_msg(
-        self,
-        me_info: MeResponse,
-        vacancy: VacancyItem,
-    ):
-        application_msgs = self._get_application_messages()
+    messages_list: DefaultCoverLetter
 
-        return self._get_random_predefined_msg(application_msgs, me_info, vacancy)
+    def get_msg(self, user_info: MeResponse, vacancy: VacancyItem):
+        msg_template = self._get_msg()
 
-    @staticmethod
-    def _get_application_messages(message_list: TextIO | None = None) -> list[str]:
-        if message_list:
-            application_messages = list(filter(None, map(str.strip, message_list)))
-        else:
-            application_messages = [
-                "{Меня заинтересовала|Мне понравилась} ваша вакансия %(vacancy_name)s",
-                "{Прошу рассмотреть|Предлагаю рассмотреть} {мою кандидатуру|мое резюме} на вакансию %(vacancy_name)s",
-            ]
-        return application_messages
-
-    @staticmethod
-    def _get_random_predefined_msg(msg_template: List[str], user_info: MeResponse, vacancy: VacancyItem):
         basic_message_placeholders = {
             "first_name": user_info.first_name,
             "last_name": user_info.last_name,
@@ -105,3 +90,9 @@ class NegotiationsLocal:
 
         msg = random_text(random.choice(msg_template)) % message_placeholders
         return msg
+
+    def _get_msg(self) -> list[str]:
+        logger.warning("local negotiations Msg %s ", self.messages_list.messages)
+        application_messages = list(filter(None, map(str.strip, self.messages_list.messages)))
+
+        return application_messages

@@ -6,6 +6,7 @@ from typing import List
 from api import ApiError, HHApi
 from api.errors import LimitExceeded
 from api.hh_api.schemas.similar_vacancies import VacancyItem
+from config import DefaultCoverLetter
 from mixins import get_resume_id
 from operations.apply_similar.utils import get_chat
 from operations.apply_similar.utils.negotiations import NegotiationsLLM, NegotiationsLocal
@@ -34,7 +35,8 @@ class Operation(base.OperationBase):
 
             self.negotiations_llm = NegotiationsLLM(negotiations_chat)
         else:
-            self.negotiations_chat = NegotiationsLocal()
+            messages_list: DefaultCoverLetter = self.config.default_messages.cover_letter
+            self.negotiations_chat = NegotiationsLocal(messages_list)
 
         if self.args.verify_relevance:
             vacancy_relevance_chat = get_chat(
@@ -131,12 +133,13 @@ class Operation(base.OperationBase):
                 vacancy_full = self.api_client.vacancy.get(vacancy.id)
 
                 msg = self.negotiations_llm.get_msg(vacancy_full, self.config.llm.cover_letters.messages.footer_msg)
-                if not msg:
+                if not msg:  # llm dropped error
                     return
             else:
                 me_info = self.api_client.me.get()
 
                 msg = self.negotiations_chat.get_msg(me_info, vacancy)
+                logger.error("Test msg from local negotiations %s", msg)
 
             params["message"] = msg
 

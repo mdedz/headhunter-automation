@@ -24,7 +24,7 @@ class DefaultChatReply:
 
 @dataclass
 class DefaultCoverLetter:
-    message: str = ""
+    messages: str = ""
 
 
 @dataclass

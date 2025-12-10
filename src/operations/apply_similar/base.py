@@ -256,11 +256,6 @@ class OperationBase(BaseOperation):
     def run(self, args: Namespace, api_client: HHApi) -> None:
         pass
 
-    @staticmethod
-    @abstractmethod
-    def _get_application_messages(message_list: TextIO | None = None) -> list[str]:
-        pass
-
     @abstractmethod
     def _apply_similar(self) -> None:
         pass
