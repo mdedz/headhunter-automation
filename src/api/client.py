@@ -53,9 +53,7 @@ class BaseClient:
             logger.debug("Default Headers: %r", session.headers)
 
     def default_user_agent(self) -> str:
-        devices = "23053RN02A, 23053RN02Y, 23053RN02I, 23053RN02L, 23077RABDC".split(
-            ", "
-        )
+        devices = "23053RN02A, 23053RN02Y, 23053RN02I, 23053RN02L, 23077RABDC".split(", ")
         device = random.choice(devices)
         minor = random.randint(100, 150)
         patch = random.randint(10000, 15000)
@@ -82,16 +80,12 @@ class BaseClient:
         params.update(kwargs)
         url = self.resolve_url(endpoint)
         with self.lock:
-            if (
-                delay := (self.delay if delay is None else delay)
-                - time.monotonic()
-                + self.previous_request_time
-            ) > 0:
+            if (delay := (self.delay if delay is None else delay) - time.monotonic() + self.previous_request_time) > 0:
                 logger.debug("wait %fs before request", delay)
                 time.sleep(delay)
             has_body = method in ["POST", "PUT"]
             payload = {"data" if has_body else "params": params}
-            response = self.session.request( # pyright: ignore[reportOptionalMemberAccess]
+            response = self.session.request(  # pyright: ignore[reportOptionalMemberAccess]
                 method,
                 url,
                 **payload,  # pyright: ignore[reportArgumentType]
@@ -173,15 +167,13 @@ class OAuthClient(BaseClient):
         params_qs = urlencode({k: v for k, v in params.items() if v})
         return self.resolve_url(f"/authorize?{params_qs}")
 
-    def request_access_token(
-        self, endpoint: str, params: dict[str, Any] | None = None, **kw: Any
-    ) -> AccessToken:
+    def request_access_token(self, endpoint: str, params: dict[str, Any] | None = None, **kw: Any) -> AccessToken:
         tok = self.post(endpoint, params, **kw)
         return {
             "access_token": tok.get("access_token"),
             "refresh_token": tok.get("refresh_token"),
             "access_expires_at": int(time.time()) + tok.pop("expires_in", 0),
-            "token_type": "bearer"
+            "token_type": "bearer",
         }
 
     def authenticate(self, code: str) -> AccessToken:
@@ -194,9 +186,7 @@ class OAuthClient(BaseClient):
         return self.request_access_token("/token", params)
 
     def refresh_access_token(self, refresh_token: str) -> AccessToken:
-        return self.request_access_token(
-            "/token", grant_type="refresh_token", refresh_token=refresh_token
-        )
+        return self.request_access_token("/token", grant_type="refresh_token", refresh_token=refresh_token)
 
 
 @dataclass
@@ -227,11 +217,7 @@ class ApiClient(BaseClient):
     def additional_headers(
         self,
     ) -> dict[str, str]:
-        return (
-            {"authorization": f"Bearer {self.access_token}"}
-            if self.access_token
-            else {}
-        )
+        return {"authorization": f"Bearer {self.access_token}"} if self.access_token else {}
 
     def request(
         self,
@@ -269,8 +255,9 @@ class ApiClient(BaseClient):
             "access_token": self.access_token,
             "refresh_token": self.refresh_token,
             "access_expires_at": self.access_expires_at,
-            "token_type": "bearer"
+            "token_type": "bearer",
         }
+
 
 from api.hh_api.routes import (
     BlacklistedEmployers,

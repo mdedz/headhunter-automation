@@ -20,8 +20,8 @@ class Prompts:
 class LLMError(Exception):
     pass
 
-class BaseLLM(ABC):
 
+class BaseLLM(ABC):
     def __init__(self, cfg: ModelConfig, prompts: Prompts):
         self.cfg = cfg
         self.prompts = prompts

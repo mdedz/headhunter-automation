@@ -3,7 +3,6 @@ from src.ai.models.groq import GroqLLM
 
 
 class LLMFactory:
-
     providers = {
         "groq": GroqLLM,
     }

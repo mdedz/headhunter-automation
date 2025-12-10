@@ -16,7 +16,7 @@ from src.color_log import ColorHandler
 from src.utils import Data
 from src.argparse import CustomHelpFormatter
 
-logger = logging.getLogger(__package__)
+logger = logging.getLogger()
 
 
 class BaseOperation:
@@ -71,26 +71,28 @@ class HHApplicantTool:
         parser = argparse.ArgumentParser(
             prog="headhunter-automation",
             description=(
-                "HH Applicant Automation Tool. "
-                "Автоматизация откликов, обновления резюме и работы с API HeadHunter.\n"
+                "HH Applicant Automation Tool. Автоматизация откликов, обновления резюме и работы с API HeadHunter.\n"
             ),
             formatter_class=CustomHelpFormatter,
-            add_help=False,  
+            add_help=False,
         )
         group = parser.add_argument_group("Global options")
         group.add_argument("-h", "--help", action="help", help="Show this help message and exit")
         group.add_argument("--config-path", type=str, help="Config file path", default="config/config.toml")
         group.add_argument("--data-path", type=str, help="Data file path")
-        group.add_argument("-v", "--verbosity", 
-                           help="Уровень отладочной информации в выводе [Нет: WARNING, -v: INFO, -vv: DEBUG]", 
-                           action="count", default=0
-                           )
+        group.add_argument(
+            "-v",
+            "--verbosity",
+            help="Уровень отладочной информации в выводе [Нет: WARNING, -v: INFO, -vv: DEBUG]",
+            action="count",
+            default=0,
+        )
         group.add_argument("-d", "--delay", type=float, default=0.334, help="Задержка между запросами к API HH")
         group.add_argument("--user-agent", type=str, help="User-Agent для каждого запроса")
         group.add_argument("--proxy-url", type=str, help="Прокси, используемый для запросов к API")
-        
+
         subparsers = parser.add_subparsers(help="commands", dest="command", metavar="")
-        
+
         package_dir = Path(__file__).resolve().parent / OPERATIONS
         for _, module_name, _ in iter_modules([str(package_dir)]):
             mod = import_module(f"{__package__}.{OPERATIONS}.{module_name}")
@@ -109,6 +111,7 @@ class HHApplicantTool:
     def run(self, argv: Sequence[str] | None) -> None | int:
         parser = self.create_parser()
         args = parser.parse_args(argv, namespace=Namespace())
+
         log_level = max(logging.DEBUG, logging.WARNING - args.verbosity * 10)
         logger.setLevel(log_level)
         handler = ColorHandler()

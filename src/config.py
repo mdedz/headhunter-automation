@@ -11,9 +11,27 @@ import tomllib
 class Proxy:
     proxy_url: str = ""
 
+
 @dataclass
 class Candidate:
     info: str = ""
+
+
+@dataclass
+class DefaultChatReply:
+    message: str = ""
+
+
+@dataclass
+class DefaultCoverLetter:
+    message: str = ""
+
+
+@dataclass
+class DefaultMessages:
+    chat_reply: DefaultChatReply = field(default_factory=DefaultChatReply)
+    cover_letter: DefaultCoverLetter = field(default_factory=DefaultCoverLetter)
+
 
 @dataclass
 class LLMOptions:
@@ -24,9 +42,11 @@ class LLMOptions:
     top_p: float = 0.9
     api_key: Optional[str] = None
 
+
 @dataclass
 class LLMPrompts:
     system: str = ""
+
 
 @dataclass
 class CoverLettersMessages:
@@ -39,28 +59,32 @@ class CoverLetters:
     prompts: LLMPrompts = field(default_factory=LLMPrompts)
     messages: CoverLettersMessages = field(default_factory=CoverLettersMessages)
 
+
 @dataclass
 class VerifyRelevance:
     options: LLMOptions = field(default_factory=LLMOptions)
     prompts: LLMPrompts = field(default_factory=LLMPrompts)
+
 
 @dataclass
 class ChatReply:
     options: LLMOptions = field(default_factory=LLMOptions)
     prompts: LLMPrompts = field(default_factory=LLMPrompts)
 
+
 @dataclass
 class LLMConfig:
     cover_letters: CoverLetters = field(default_factory=CoverLetters)
     verify_relevance: VerifyRelevance = field(default_factory=VerifyRelevance)
     chat_reply: ChatReply = field(default_factory=ChatReply)
-    
+
+
 @dataclass
 class Config:
     llm: LLMConfig = field(default_factory=LLMConfig)
     candidate: Candidate = field(default_factory=Candidate)
+    default_messages: DefaultMessages = field(default_factory=DefaultMessages)
     proxy: Proxy = field(default_factory=Proxy)
-
 
     @classmethod
     def load(cls, config_path: str | Path = "config/config.toml") -> Config:
@@ -97,6 +121,6 @@ class Config:
                 else:
                     kwargs[name] = value
 
-            return cls_type(**kwargs) # type: ignore
+            return cls_type(**kwargs)  # type: ignore
 
-        return to_dc(cls, data) # type: ignore
+        return to_dc(cls, data)  # type: ignore

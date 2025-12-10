@@ -46,6 +46,7 @@ class Vacancy:
     salary_range: SalaryRange | None
     created_at: str
 
+
 @dataclass
 class Resume:
     id: str
@@ -88,7 +89,9 @@ class ErrorItem:
     type: str
     value: str
 
+
 # DELETE https://api.hh.ru/negotiations/active/{nid}
+
 
 @dataclass
 class DeleteNegotiationsResponse:

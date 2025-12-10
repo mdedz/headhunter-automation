@@ -8,5 +8,3 @@ def get_resume_id(api_client: HHApi) -> str:
         return str(resumes.items[0].id)
     except (ApiError, KeyError, IndexError) as ex:
         raise Exception("Не могу получить идентификатор резюме") from ex
-
-

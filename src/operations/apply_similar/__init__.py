@@ -16,25 +16,21 @@ from utils import BlockedVacanciesDB, truncate_string
 
 logger = logging.getLogger(__package__)
 
+
 class Operation(base.OperationBase):
     """Reply to all relevant vacancies."""
 
-    def run(
-        self, args: base.Namespace, api_client: HHApi
-    ) -> None:
+    def run(self, args: base.Namespace, api_client: HHApi) -> None:
         self.args: base.Namespace = args
         self.config = Config.load(args.config_path)
 
         self.api_client = api_client
         self.resume_id = args.resume_id or get_resume_id(api_client)
-        self.application_messages = self._get_application_messages(args.message_list)
 
         if self.args.use_ai:
             negotiations_chat = get_chat(
-                self.config.llm.cover_letters.prompts,
-                self.config.llm.cover_letters.options,
-                self.config.candidate
-                )
+                self.config.llm.cover_letters.prompts, self.config.llm.cover_letters.options, self.config.candidate
+            )
 
             self.negotiations_llm = NegotiationsLLM(negotiations_chat)
         else:
@@ -44,15 +40,14 @@ class Operation(base.OperationBase):
             vacancy_relevance_chat = get_chat(
                 self.config.llm.verify_relevance.prompts,
                 self.config.llm.verify_relevance.options,
-                self.config.candidate
-                )
+                self.config.candidate,
+            )
             self.vacancy_relevance_llm = VacancyRelevanceLLM(vacancy_relevance_chat)
 
         self.apply_min_interval, self.apply_max_interval = args.apply_interval
         self.page_min_interval, self.page_max_interval = args.page_interval
 
         self._apply_similar()
-
 
     def _apply_similar(self) -> None:
         vacancies = self._get_vacancies()
@@ -71,7 +66,7 @@ class Operation(base.OperationBase):
     def _apply_vacancy(self, vacancy: VacancyItem) -> bool:
         """
         True: Successfully applied to vacancy
-        False: Did not apply to vacancy 
+        False: Did not apply to vacancy
         """
 
         if vacancy.has_test:
@@ -103,7 +98,7 @@ class Operation(base.OperationBase):
                 print(
                     "Skipping vacancy cause it is not relevant to candidate: %s %s",
                     vacancy.name,
-                    vacancy.apply_alternate_url
+                    vacancy.apply_alternate_url,
                 )
 
                 db = BlockedVacanciesDB()
@@ -112,7 +107,6 @@ class Operation(base.OperationBase):
                 return False
 
         try:
-
             self._send_apply(vacancy)
             return True
         except LimitExceeded:
@@ -124,7 +118,7 @@ class Operation(base.OperationBase):
 
     def _send_apply(self, vacancy: VacancyItem):
         """
-        Generates cover letter for vacancy(if needed) and send the apply 
+        Generates cover letter for vacancy(if needed) and send the apply
         """
         params = {
             "resume_id": self.resume_id,
@@ -136,11 +130,9 @@ class Operation(base.OperationBase):
             if self.args.use_ai:
                 vacancy_full = self.api_client.vacancy.get(vacancy.id)
 
-                msg = self.negotiations_llm.get_msg(
-                    vacancy_full,
-                    self.config.llm.cover_letters.messages.footer_msg
-                )
-                if not msg: return
+                msg = self.negotiations_llm.get_msg(vacancy_full, self.config.llm.cover_letters.messages.footer_msg)
+                if not msg:
+                    return
             else:
                 me_info = self.api_client.me.get()
 
@@ -148,9 +140,7 @@ class Operation(base.OperationBase):
 
             params["message"] = msg
 
-        interval = random.uniform(
-            self.apply_min_interval, self.apply_max_interval
-        )
+        interval = random.uniform(self.apply_min_interval, self.apply_max_interval)
         time.sleep(interval)
 
         res = self.api_client.negotiations.post(params)
@@ -163,16 +153,12 @@ class Operation(base.OperationBase):
             ")",
         )
 
-
     def _get_vacancies(self, per_page: int = 100) -> List[VacancyItem]:
         rv = []
         # API gives only 2 000 items
         for page in range(20):
             params = self._get_search_params(self.args, page, per_page)
-            vacancies = self.api_client.similar_vacancies.get(
-                self.resume_id,
-                params
-                )
+            vacancies = self.api_client.similar_vacancies.get(self.resume_id, params)
 
             rv.extend(vacancies.items)
             if page >= vacancies.pages - 1:
@@ -180,9 +166,7 @@ class Operation(base.OperationBase):
 
             # Timeout before fetching next page
             if page > 0:
-                interval = random.uniform(
-                    self.page_min_interval, self.page_max_interval
-                )
+                interval = random.uniform(self.page_min_interval, self.page_max_interval)
                 time.sleep(interval)
 
         return rv

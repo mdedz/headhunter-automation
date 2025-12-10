@@ -6,4 +6,3 @@ class AccessToken(TypedDict):
     refresh_token: str | None
     access_expires_at: int | None
     token_type: Literal["bearer"]
-

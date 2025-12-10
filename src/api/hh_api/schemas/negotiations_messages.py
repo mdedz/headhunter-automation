@@ -7,10 +7,12 @@ from dataclasses import dataclass
 class Author:
     participant_type: str
 
+
 @dataclass
 class NegotiationsMessagesItem:
     text: str
     author: Author
+
 
 @dataclass
 class GetNegotiationsMessagesResponse:

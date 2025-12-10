@@ -15,6 +15,7 @@ class BlacklistedEmployers(BaseEndpoint):
     GET: https://api.hh.ru/employers/blacklisted
     PUT: https://api.hh.ru/vacancies/blacklisted/{vacancy_id}
     """
+
     def get(self, *args, **kwargs) -> GetBlacklistedEmployersResponse:
         data = self.client.get("/employers/blacklisted", *args, **kwargs)
 
@@ -32,6 +33,7 @@ class Negotiations(BaseEndpoint):
     POST: https://api.hh.ru/negotiations
     DELETE: https://api.hh.ru/negotiations/active/{nid}
     """
+
     def get(self, *args, **kwargs) -> GetNegotiationsListResponse:
         data = self.client.get("/negotiations", *args, **kwargs)
 
@@ -52,6 +54,7 @@ class NegotiationsMessages(BaseEndpoint):
     GET: https://api.hh.ru/negotiations/{nid}/messages
     POST: https://api.hh.ru/negotiations/{nid}/messages
     """
+
     def get(self, nid: str, *args, **kwargs) -> GetNegotiationsMessagesResponse:
         data = self.client.get(f"/negotiations/{nid}/messages", *args, **kwargs)
 
@@ -59,7 +62,7 @@ class NegotiationsMessages(BaseEndpoint):
 
     def post(self, nid: str, *args, **kwargs) -> bool:
         """this method is supposed to return a huuuge response but we don't need to define it yet so let's leave it blank for now"""
-        #TODO: One day, I'll define the response
+        # TODO: One day, I'll define the response
         _ = self.client.post(f"/negotiations/{nid}/messages", *args, **kwargs)
 
         return True
@@ -69,33 +72,40 @@ class MyResumes(BaseEndpoint):
     """
     GET: https://api.hh.ru/resumes/mine
     """
+
     def get(self, *args, **kwargs) -> GetResumesResponse:
         data = self.client.get("/resumes/mine", *args, **kwargs)
 
         return from_dict(GetResumesResponse, data)
 
+
 class PublishResume(BaseEndpoint):
     """
     POST: https://api.hh.ru/resumes/{resume_id}/publish
     """
+
     def post(self, resume_id: str, *args, **kwargs) -> bool:
         data = self.client.post(f"/resumes/{resume_id}/publish", *args, **kwargs)
 
         return data == []
 
+
 class Me(BaseEndpoint):
     """
     GET: https://api.hh.ru/me
     """
+
     def get(self, *args, **kwargs) -> MeResponse:
         data = self.client.get("/me", *args, **kwargs)
 
         return from_dict(MeResponse, data)
 
+
 class SimilarVacancies(BaseEndpoint):
     """
     GET: https://api.hh.ru/resumes/{resume_id}/similar_vacancies
     """
+
     def get(self, resume_id: str, *args, **kwargs) -> SimilarVacanciesResponse:
         data = self.client.get(f"/resumes/{resume_id}/similar_vacancies", *args, **kwargs)
 
@@ -106,6 +116,7 @@ class Vacancy(BaseEndpoint):
     """
     GET: https://api.hh.ru/vacancies/{vacancy_id}
     """
+
     def get(self, vacancy_id: str, *args, **kwargs) -> VacancyFull:
         data = self.client.get(f"/vacancies/{vacancy_id}", *args, **kwargs)
 

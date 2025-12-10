@@ -22,7 +22,6 @@ class Namespace(BaseNamespace):
     use_ai: bool
     verify_relevance: bool
     block_irrelevant: bool
-    pre_prompt: str
     apply_interval: tuple[float, float]
     page_interval: tuple[float, float]
     order_by: str
@@ -53,6 +52,7 @@ class Namespace(BaseNamespace):
     no_magic: bool
     premium: bool
     clusters: bool
+
 
 def _bool(v: bool) -> str:
     return str(v).lower()
@@ -99,11 +99,6 @@ class OperationBase(BaseOperation):
             action=argparse.BooleanOptionalAction,
         )
         parser.add_argument(
-            "--prompt",
-            help="Добавочный промпт для генерации сопроводительного письма",
-            default="Сгенерируй сопроводительное письмо не более 5-7 предложений от моего имени для вакансии",
-        )
-        parser.add_argument(
             "--apply-interval",
             help="Интервал перед отправкой откликов в секундах (X, X-Y)",
             default="1-5",
@@ -146,22 +141,16 @@ class OperationBase(BaseOperation):
             type=str,
             default=None,
         )
-        parser.add_argument(
-            "--employment", nargs="+", help="Тип занятости (employment)"
-        )
+        parser.add_argument("--employment", nargs="+", help="Тип занятости (employment)")
         parser.add_argument("--area", nargs="+", help="Регион (area id)")
         parser.add_argument("--metro", nargs="+", help="Станции метро (metro id)")
         parser.add_argument("--professional-role", nargs="+", help="Проф. роль (id)")
         parser.add_argument("--industry", nargs="+", help="Индустрия (industry id)")
         parser.add_argument("--employer-id", nargs="+", help="ID работодателей")
-        parser.add_argument(
-            "--excluded-employer-id", nargs="+", help="Исключить работодателей"
-        )
+        parser.add_argument("--excluded-employer-id", nargs="+", help="Исключить работодателей")
         parser.add_argument("--currency", help="Код валюты (RUR, USD, EUR)")
         parser.add_argument("--salary", type=int, help="Минимальная зарплата")
-        parser.add_argument(
-            "--only-with-salary", default=False, action=argparse.BooleanOptionalAction
-        )
+        parser.add_argument("--only-with-salary", default=False, action=argparse.BooleanOptionalAction)
         parser.add_argument("--label", nargs="+", help="Метки вакансий (label)")
         parser.add_argument("--period", type=int, help="Искать вакансии за N дней")
         parser.add_argument("--date-from", help="Дата публикации с (YYYY-MM-DD)")
@@ -192,9 +181,7 @@ class OperationBase(BaseOperation):
             action=argparse.BooleanOptionalAction,
             help="Только премиум вакансии",
         )
-        parser.add_argument(
-            "--search-field", nargs="+", help="Поля поиска (name, company_name и т.п.)"
-        )
+        parser.add_argument("--search-field", nargs="+", help="Поля поиска (name, company_name и т.п.)")
         parser.add_argument(
             "--clusters",
             action=argparse.BooleanOptionalAction,
@@ -265,11 +252,8 @@ class OperationBase(BaseOperation):
 
         return params
 
-
     @abstractmethod
-    def run(
-        self, args: Namespace, api_client: HHApi
-    ) -> None:
+    def run(self, args: Namespace, api_client: HHApi) -> None:
         pass
 
     @staticmethod

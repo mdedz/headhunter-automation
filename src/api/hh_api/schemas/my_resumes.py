@@ -3,6 +3,7 @@ from typing import List
 
 # GET https://api.hh.ru/resumes/mine
 
+
 @dataclass
 class Status:
     id: str

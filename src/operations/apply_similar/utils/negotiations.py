@@ -22,6 +22,7 @@ def html_to_text(html: str) -> str:
 
     return soup.get_text(separator=" ", strip=True)
 
+
 def _serialize_for_llm(vacancy: VacancyFull) -> str:
     key_skills = " ".join([x.name for x in vacancy.key_skills])
     description = html_to_text(vacancy.description)
@@ -40,6 +41,7 @@ def _serialize_for_llm(vacancy: VacancyFull) -> str:
         f"Описание: {vacancy_info['description']}\n"
         f"Опыт: {vacancy_info['experience']}\n"
     )
+
 
 @dataclass
 class NegotiationsLLM:
@@ -64,10 +66,11 @@ class NegotiationsLLM:
 
 
 class NegotiationsLocal:
-    def get_msg(self,
-                me_info: MeResponse,
-                vacancy: VacancyItem,
-        ):
+    def get_msg(
+        self,
+        me_info: MeResponse,
+        vacancy: VacancyItem,
+    ):
         application_msgs = self._get_application_messages()
 
         return self._get_random_predefined_msg(application_msgs, me_info, vacancy)
@@ -98,13 +101,7 @@ class NegotiationsLocal:
             **basic_message_placeholders,
         }
 
-        logger.debug(
-            "Вакансия %(vacancy_name)s от %(employer_name)s"
-            % message_placeholders
-        )
+        logger.debug("Вакансия %(vacancy_name)s от %(employer_name)s" % message_placeholders)
 
-        msg = (
-            random_text(random.choice(msg_template))
-            % message_placeholders
-        )
+        msg = random_text(random.choice(msg_template)) % message_placeholders
         return msg

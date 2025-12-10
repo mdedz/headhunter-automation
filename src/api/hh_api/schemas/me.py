@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 # GET https://api.hh.ru/me
 
+
 @dataclass
 class MeResponse:
     id: str

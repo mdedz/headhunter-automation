@@ -61,8 +61,10 @@ class Data(dict):
 
     __getitem__ = dict.get
 
+
 def truncate_string(s: str, limit: int = 75, ellipsis: str = "…") -> str:
     return s[:limit] + bool(s[limit:]) * ellipsis
+
 
 def make_hash(data: str) -> str:
     return hashlib.sha256(data.encode()).hexdigest()
@@ -74,6 +76,7 @@ def parse_invalid_datetime(dt: str) -> datetime:
 
 def fix_datetime(dt: str | None) -> str | None:
     return parse_invalid_datetime(dt).isoformat() if dt is not None else None
+
 
 def random_text(s: str) -> str:
     while (
@@ -96,6 +99,7 @@ def parse_interval(interval: str) -> tuple[float, float]:
     else:
         min_interval = max_interval = float(interval)
     return min(min_interval, max_interval), max(min_interval, max_interval)
+
 
 class BlockedVacanciesDB:
     """
@@ -131,12 +135,7 @@ class BlockedVacanciesDB:
         with self._lock:
             try:
                 with self._path.open("w", encoding="utf-8") as f:
-                    json.dump(
-                        {"blocked": sorted(list(self.blocked))},
-                        f,
-                        ensure_ascii=False,
-                        indent=2
-                    )
+                    json.dump({"blocked": sorted(list(self.blocked))}, f, ensure_ascii=False, indent=2)
             except Exception as e:
                 print_err(f"Failed to save blocked vacancies: {e}")
 

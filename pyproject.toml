@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Mdedz <ilya.business.contact77@gmail.com>"]
 packages = [{ include = "*", from = "src" }]
+
 [tool.poetry.dependencies]
 python = "^3.12"
 requests = { extras = ["socks"], version = "^2.32.3" }

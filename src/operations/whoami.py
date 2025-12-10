@@ -20,6 +20,4 @@ class Operation(BaseOperation):
 
     def run(self, args: Namespace, api_client: HHApi, *_args, **_kwargs) -> None:
         result = api_client.me.get()
-        print(
-            f"{result.last_name} {result.first_name} {result.middle_name or ""}"
-        )
+        print(f"{result.last_name} {result.first_name} {result.middle_name or ''}")

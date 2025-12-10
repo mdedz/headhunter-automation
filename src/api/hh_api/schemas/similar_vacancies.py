@@ -15,6 +15,7 @@ class Snippet:
     requirement: str | None
     responsibility: str | None
 
+
 @dataclass
 class Experience:
     id: str | None
@@ -48,7 +49,9 @@ class VacancyItem:
     experience: Experience | None
     archived: bool | None
 
+
 # GET https://api.hh.ru/resumes/{resume_id}/similar_vacancies
+
 
 @dataclass
 class SimilarVacanciesResponse:

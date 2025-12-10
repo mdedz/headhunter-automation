@@ -21,6 +21,7 @@ class Namespace(BaseNamespace):
 
 class Operation(BaseOperation):
     """Send custom API request to headhunter"""
+
     def setup_parser(self, parser: argparse.ArgumentParser) -> None:
         parser.add_argument("endpoint", help="Путь до эндпоинта API")
         parser.add_argument(
@@ -29,9 +30,7 @@ class Operation(BaseOperation):
             help="Параметры указываются в виде PARAM=VALUE",
             default=[],
         )
-        parser.add_argument(
-            "-m", "--method", "--meth", default="GET", help="HTTP Метод"
-        )
+        parser.add_argument("-m", "--method", "--meth", default="GET", help="HTTP Метод")
 
     def run(self, args: Namespace, api_client: HHApi, *_) -> None:
         params = dict(x.split("=", 1) for x in args.param)
@@ -43,4 +42,3 @@ class Operation(BaseOperation):
             print(json.dumps(result, ensure_ascii=False))
         except ApiError as ex:
             json.dump(ex.data, sys.stderr, ensure_ascii=False)
-

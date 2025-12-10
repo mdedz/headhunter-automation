@@ -15,6 +15,7 @@ try:
     QT_IMPORTED = True
 except ImportError:
     QT_IMPORTED = False
+
     class QUrl:
         pass
 
@@ -31,8 +32,8 @@ except ImportError:
         pass
 
 
-from ..api import HHApi
-from ..main import BaseOperation, Namespace
+from src.api import HHApi
+from src.main import BaseOperation, Namespace
 
 logger = logging.getLogger(__package__)
 
@@ -74,6 +75,7 @@ class WebViewWindow(QMainWindow):
             print("🔓 Авторизация прошла успешно!")
             self.close()
 
+
 class Operation(BaseOperation):
     """Authorize on website"""
 
@@ -82,9 +84,7 @@ class Operation(BaseOperation):
 
     def run(self, args: Namespace, api_client: HHApi, *_) -> None:
         if not QT_IMPORTED:
-            print_err(
-                "No pyqt"
-            )
+            print_err("No pyqt")
             sys.exit(1)
 
         app = QApplication(sys.argv)

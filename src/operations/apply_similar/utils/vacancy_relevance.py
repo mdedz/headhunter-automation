@@ -6,11 +6,10 @@ from api.hh_api.schemas.similar_vacancies import VacancyItem
 
 logger = logging.getLogger(__package__)
 
+
 def _serialize_for_llm(vacancy: VacancyItem) -> str:
-    return (
-        f"Требования: {vacancy.snippet.requirement}\n"
-        f"Обязанности: {vacancy.snippet.responsibility}\n"
-    )
+    return f"Требования: {vacancy.snippet.requirement}\nОбязанности: {vacancy.snippet.responsibility}\n"
+
 
 @dataclass
 class VacancyRelevanceLLM:
@@ -32,4 +31,3 @@ class VacancyRelevanceLLM:
             return int(msg) == 1
 
         return True
-

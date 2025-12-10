@@ -1,6 +1,7 @@
 import sys
 import argparse
 
+
 class Color:
     CYAN = "\033[96m"
     GREEN = "\033[92m"
@@ -10,8 +11,9 @@ class Color:
 
 
 def supports_color():
-    #if cli supports colors
+    # if cli supports colors
     return sys.stdout.isatty()
+
 
 def paint_text(color: str, text: str) -> str:
     """If cli supports colors, then paint the string otherwise return initial one"""
@@ -20,27 +22,30 @@ def paint_text(color: str, text: str) -> str:
     else:
         return text
 
+
 class CustomHelpFormatter(argparse.HelpFormatter):
     def __init__(self, prog):
         super().__init__(prog, width=150, max_help_position=50)
-        
+
     def add_usage(self, usage, actions, groups, prefix=None):
         """Hardcoded usage line."""
 
-        text = "".join((
-            paint_text(Color.CYAN, "Usage: "),
-            paint_text(Color.GREEN, "headhunter-automation "),
-            paint_text(Color.MAGENTA, "[OPERATION] "),
-            paint_text(Color.MAGENTA, "[OPERATION_OPTIONS] "),
-            paint_text(Color.YELLOW, "[GLOBAL_OPTIONS] "),
-            "\n",
-            f"If you want to print help for operation then: ",
-            paint_text(Color.CYAN, "headhunter-automation [OPERATION] --help"),
-            "\n",
-            "Help structure is: ",
-            paint_text(Color.CYAN, "[ARGUMENT] [DESCRIPTION]([DEFAULT_VALUE])"),
-            "\n"
-        ))
+        text = "".join(
+            (
+                paint_text(Color.CYAN, "Usage: "),
+                paint_text(Color.GREEN, "headhunter-automation "),
+                paint_text(Color.YELLOW, "[GLOBAL_OPTIONS] "),
+                paint_text(Color.MAGENTA, "[OPERATION] "),
+                paint_text(Color.MAGENTA, "[OPERATION_OPTIONS] "),
+                "\n",
+                f"If you want to print help for operation then: ",
+                paint_text(Color.CYAN, "headhunter-automation [OPERATION] --help"),
+                "\n",
+                "Help structure is: ",
+                paint_text(Color.CYAN, "[ARGUMENT] [DESCRIPTION]([DEFAULT_VALUE])"),
+                "\n",
+            )
+        )
 
         self._add_item(lambda: text, [])
 
@@ -71,8 +76,10 @@ class CustomHelpFormatter(argparse.HelpFormatter):
 
         if action.metavar:
             _mv: str | tuple[str, ...] = action.metavar
-            if type(_mv) is str: mv = paint_text(Color.YELLOW, _mv)
-            else: mv = paint_text(Color.YELLOW, " ".join(_mv))
+            if type(_mv) is str:
+                mv = paint_text(Color.YELLOW, _mv)
+            else:
+                mv = paint_text(Color.YELLOW, " ".join(_mv))
         else:
             mv = None
 
@@ -84,7 +91,7 @@ class CustomHelpFormatter(argparse.HelpFormatter):
             return f"{opts} {type_name}"
 
         return opts
-    
+
     def _format_action(self, action):
         """Format positional arguments (operations)"""
         if isinstance(action, argparse._SubParsersAction):
@@ -103,5 +110,3 @@ class CustomHelpFormatter(argparse.HelpFormatter):
             return "\n".join(parts) + "\n"
 
         return super()._format_action(action)
-    
-    

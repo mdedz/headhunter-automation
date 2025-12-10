@@ -36,7 +36,9 @@ class PutBlacklistedEmployersError:
     type: str
     value: str
 
+
 # PUT https://api.hh.ru/vacancies/blacklisted/{vacancy_id}
+
 
 @dataclass
 class PutBlacklistedEmployersResponse:
