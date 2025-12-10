@@ -75,3 +75,9 @@ system = """
 Выводи только финальное сообщение, без комментариев.
 Профиль кандидата:
 """
+
+[default_messages.chat_reply]
+message = """Здравствуйте."""
+
+[default_messages.cover_letter]
+message = """Здравствуйте."""
