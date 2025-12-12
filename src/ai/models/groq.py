@@ -18,7 +18,7 @@ class GroqLLM(BaseLLM):
 
     def send_message(self, user_message: str, verify_tag_end: bool = False) -> str:
         if verify_tag_end:
-            user_message += "\nПожалуйста, пометь конец письма тегом <END>."
+            user_message += "\nПометь конец письма тегом <END>."
         try:
             messages = [{"role": "system", "content": self.prompts.system}, {"role": "user", "content": user_message}]
 
@@ -57,7 +57,9 @@ class GroqLLM(BaseLLM):
             if not finished:
                 logger.warning("Письмо могло быть обрезано, но достигнут лимит повторов.")
 
-            logger.info("Generated msg: %s", response)
+            logger.info(f"Generated msg: {response}")
+            
+            response = response.replace("—", "-")
             return response
 
         except Exception as ex:

@@ -171,10 +171,10 @@ class Operation(BaseOperation):
 
                 nid = negotiation.id
                 message_history, last_message = get_message_history(self.api_client, nid)
-                logger.debug("Last msg is %s", last_message)
+                logger.debug("Last msg is ", last_message)
 
                 is_employer_message = last_message.author.participant_type == "employer"
-                logger.debug("Is employer msg: %s", is_employer_message)
+                logger.debug("Is employer msg: ", is_employer_message)
                 message_placeholders = {
                     "vacancy_name": vacancy.name,
                     "employer_name": employer.name,
@@ -188,7 +188,7 @@ class Operation(BaseOperation):
                 ):
                     if self.reply_message:
                         msg_to_send = random_text(self.reply_message) % message_placeholders
-                        logger.debug("Msg to send: %s", msg_to_send)
+                        logger.debug("Msg to send: ", msg_to_send)
                         process_send_msg(self.api_client, msg_to_send, vacancy, nid)
                     else:
                         print_negotiation_header(message_history, message_placeholders, vacancy, salary)

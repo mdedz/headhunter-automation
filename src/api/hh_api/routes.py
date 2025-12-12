@@ -1,4 +1,4 @@
-from dacite import from_dict
+from dacite import from_dict, Config
 
 from api.hh_api.base import BaseEndpoint
 from api.hh_api.schemas.blacklisted_employers import GetBlacklistedEmployersResponse, PutBlacklistedEmployersResponse
@@ -8,6 +8,7 @@ from api.hh_api.schemas.negotiations import DeleteNegotiationsResponse, GetNegot
 from api.hh_api.schemas.negotiations_messages import GetNegotiationsMessagesResponse
 from api.hh_api.schemas.similar_vacancies import SimilarVacanciesResponse
 from api.hh_api.schemas.vacancy import VacancyFull
+from api.hh_api.schemas.resume_info import ResumeInfoResponse
 
 
 class BlacklistedEmployers(BaseEndpoint):
@@ -77,6 +78,17 @@ class MyResumes(BaseEndpoint):
         data = self.client.get("/resumes/mine", *args, **kwargs)
 
         return from_dict(GetResumesResponse, data)
+    
+    
+class ResumeInfo(BaseEndpoint):
+    """
+    GET: https://api.hh.ru/resumes/{resume_id}
+    """
+
+    def get(self, resume_id: str, *args, **kwargs) -> ResumeInfoResponse:
+        data = self.client.get(f"/resumes/{resume_id}", *args, **kwargs)
+        print("data", data)
+        return from_dict(ResumeInfoResponse, data, config=Config(strict=False))
 
 
 class PublishResume(BaseEndpoint):

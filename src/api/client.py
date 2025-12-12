@@ -75,7 +75,7 @@ class BaseClient:
     ) -> dict:
         assert method in ALLOWED_METHODS
 
-        logger.info("parms: %s", params)
+        logger.info(f"params: {params}")
         params = dict(params or {})
         params.update(kwargs)
         url = self.resolve_url(endpoint)
@@ -266,6 +266,7 @@ from api.hh_api.routes import (
     Negotiations,
     NegotiationsMessages,
     PublishResume,
+    ResumeInfo,
     SimilarVacancies,
     Vacancy,
 )
@@ -275,6 +276,7 @@ class HHApi(ApiClient):
     blacklisted_employers: BlacklistedEmployers
     negotiations: Negotiations
     my_resumes: MyResumes
+    resume_info: ResumeInfo
     publish_resume: PublishResume
     me: Me
     similar_vacancies: SimilarVacancies
@@ -292,3 +294,4 @@ class HHApi(ApiClient):
         self.similar_vacancies = SimilarVacancies(self)
         self.negotiations_messages = NegotiationsMessages(self)
         self.vacancy = Vacancy(self)
+        self.resume_info = ResumeInfo(self)

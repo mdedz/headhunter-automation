@@ -71,12 +71,17 @@ class ChatReply:
     options: LLMOptions = field(default_factory=LLMOptions)
     prompts: LLMPrompts = field(default_factory=LLMPrompts)
 
+@dataclass
+class ResumeBuilder:
+    options: LLMOptions = field(default_factory=LLMOptions)
+    prompts: LLMPrompts = field(default_factory=LLMPrompts)
 
 @dataclass
 class LLMConfig:
     cover_letters: CoverLetters = field(default_factory=CoverLetters)
     verify_relevance: VerifyRelevance = field(default_factory=VerifyRelevance)
     chat_reply: ChatReply = field(default_factory=ChatReply)
+    resume_builder: ResumeBuilder = field(default_factory=ResumeBuilder)
 
 
 @dataclass

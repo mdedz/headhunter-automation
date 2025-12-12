@@ -58,7 +58,7 @@ class Operation(base.OperationBase):
             if self.args.block_irrelevant:
                 db = BlockedVacanciesDB()
                 if db.is_in_list(vacancy.id):
-                    print("Skipping vacancy cause it is in blocked list: %s", vacancy.name)
+                    print(f"Skipping vacancy cause it is in blocked list: {vacancy.name}")
                     continue
 
             self._apply_vacancy(vacancy)
@@ -73,14 +73,14 @@ class Operation(base.OperationBase):
 
         if vacancy.has_test:
             logger.debug(
-                "Пропускаем вакансию с тестом: %s",
+                f"Пропускаем вакансию с тестом: ",
                 vacancy.alternate_url,
             )
             return False
 
         if vacancy.archived:
             logger.warning(
-                "Пропускаем вакансию в архиве: %s",
+                "Пропускаем вакансию в архиве: ",
                 vacancy.alternate_url,
             )
             return False
@@ -90,7 +90,7 @@ class Operation(base.OperationBase):
 
         if relations:
             logger.debug(
-                "Пропускаем вакансию с откликом: %s",
+                "Пропускаем вакансию с откликом: ",
                 vacancy.alternate_url,
             )
             return False
@@ -98,7 +98,7 @@ class Operation(base.OperationBase):
             relevance_result = self.vacancy_relevance_llm.verify(vacancy)
             if not relevance_result:
                 print(
-                    "Skipping vacancy cause it is not relevant to candidate: %s %s",
+                    "Skipping vacancy cause it is not relevant to candidate: ",
                     vacancy.name,
                     vacancy.apply_alternate_url,
                 )
@@ -107,7 +107,6 @@ class Operation(base.OperationBase):
                 db.add(vacancy.id)
 
                 return False
-
         try:
             self._send_apply(vacancy)
             return True
@@ -139,7 +138,7 @@ class Operation(base.OperationBase):
                 me_info = self.api_client.me.get()
 
                 msg = self.negotiations_chat.get_msg(me_info, vacancy)
-                logger.error("Test msg from local negotiations %s", msg)
+                logger.error("Test msg from local negotiations ", msg)
 
             params["message"] = msg
 

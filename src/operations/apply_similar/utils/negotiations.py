@@ -57,11 +57,11 @@ class NegotiationsLLM:
 
     def _get_msg(self, vacancy_full: VacancyFull, footer_msg: str = "") -> str:
         vacancy_info = _serialize_for_llm(vacancy_full)
-        logger.debug("AI prompt:\n%s", vacancy_info)
+        logger.debug("AI prompt:\n", vacancy_info)
 
         msg = self.chat.send_message(vacancy_info, verify_tag_end=True)
 
-        msg += "\n" + footer_msg + "\n"
+        msg += "\n\n" + footer_msg + "\n"
         logger.debug(f"LLM cover letter is: {msg}")
         return msg
 
@@ -92,7 +92,7 @@ class NegotiationsLocal:
         return msg
 
     def _get_msg(self) -> list[str]:
-        logger.warning("local negotiations Msg %s ", self.messages_list.messages)
+        logger.warning("local negotiations Msg ", self.messages_list.messages)
         application_messages = list(filter(None, map(str.strip, self.messages_list.messages)))
 
         return application_messages

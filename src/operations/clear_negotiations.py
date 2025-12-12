@@ -164,7 +164,7 @@ class Operation(BaseOperation):
                     if not employer or not employer:
                         # Employer is deleted or hidden
                         continue
-                    logger.info("Blacklisting employer with url %s", employer.alternate_url)
+                    logger.info(f"Blacklisting employer with url {employer.alternate_url}")
                     api_client.blacklisted_employers.put(str(employer.id))
 
                     print(
