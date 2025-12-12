@@ -58,7 +58,7 @@ class GroqLLM(BaseLLM):
                 logger.warning("Письмо могло быть обрезано, но достигнут лимит повторов.")
 
             logger.info(f"Generated msg: {response}")
-            
+
             response = response.replace("—", "-")
             return response
 

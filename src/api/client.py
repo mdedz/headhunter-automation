@@ -50,7 +50,6 @@ class BaseClient:
                     **self.additional_headers(),
                 }
             )
-            logger.debug("Default Headers: %r", session.headers)
 
     def default_user_agent(self) -> str:
         devices = "23053RN02A, 23053RN02Y, 23053RN02I, 23053RN02L, 23077RABDC".split(", ")

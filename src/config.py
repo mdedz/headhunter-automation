@@ -71,10 +71,12 @@ class ChatReply:
     options: LLMOptions = field(default_factory=LLMOptions)
     prompts: LLMPrompts = field(default_factory=LLMPrompts)
 
+
 @dataclass
 class ResumeBuilder:
     options: LLMOptions = field(default_factory=LLMOptions)
     prompts: LLMPrompts = field(default_factory=LLMPrompts)
+
 
 @dataclass
 class LLMConfig:

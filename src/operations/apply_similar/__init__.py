@@ -32,7 +32,8 @@ class Operation(base.OperationBase):
         if self.args.use_ai:
             prompts = get_prompts(self.config.llm.cover_letters.prompts, self.config.candidate)
             negotiations_chat = get_chat(
-                prompts, self.config.llm.cover_letters.options, 
+                prompts,
+                self.config.llm.cover_letters.options,
             )
 
             self.negotiations_llm = NegotiationsLLM(negotiations_chat)
@@ -42,7 +43,7 @@ class Operation(base.OperationBase):
 
         if self.args.verify_relevance:
             prompts = get_prompts(self.config.llm.verify_relevance.prompts, self.config.candidate)
-            
+
             vacancy_relevance_chat = get_chat(
                 prompts,
                 self.config.llm.verify_relevance.options,
@@ -75,27 +76,18 @@ class Operation(base.OperationBase):
         """
 
         if vacancy.has_test:
-            logger.debug(
-                f"Пропускаем вакансию с тестом: ",
-                vacancy.alternate_url,
-            )
+            logger.debug(f"Пропускаем вакансию с тестом: {vacancy.alternate_url}")
             return False
 
         if vacancy.archived:
-            logger.warning(
-                "Пропускаем вакансию в архиве: ",
-                vacancy.alternate_url,
-            )
+            logger.warning(f"Пропускаем вакансию в архиве: {vacancy.alternate_url}")
             return False
 
         relations = vacancy.relations
         employer_id = vacancy.employer.id
 
         if relations:
-            logger.debug(
-                "Пропускаем вакансию с откликом: ",
-                vacancy.alternate_url,
-            )
+            logger.debug(f"Пропускаем вакансию с откликом: {vacancy.alternate_url}")
             return False
         if self.args.verify_relevance:
             relevance_result = self.vacancy_relevance_llm.verify(vacancy)
@@ -141,7 +133,7 @@ class Operation(base.OperationBase):
                 me_info = self.api_client.me.get()
 
                 msg = self.negotiations_chat.get_msg(me_info, vacancy)
-                logger.error("Test msg from local negotiations ", msg)
+                logger.error(f"Test msg from local negotiations {msg}")
 
             params["message"] = msg
 

@@ -39,11 +39,11 @@ def should_reply_to_negotiation(
         return False
 
     if only_interviews and not state_id.startswith("interview"):
-        logger.debug("Skipping negotiation, only invitations, state_id ", state_id)
+        logger.debug(f"Skipping negotiation, only invitations, state_id state_id: {state_id}")
         return False
 
     if only_invitations and not state_id.startswith("inv"):
-        logger.debug("Skipping negotiation, only invitations, state_id ", state_id)
+        logger.debug(f"Skipping negotiation, only invitations, state_id state_id {state_id}")
         return False
 
     nid = negotiation.id

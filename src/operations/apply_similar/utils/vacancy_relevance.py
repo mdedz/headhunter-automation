@@ -24,7 +24,7 @@ class VacancyRelevanceLLM:
 
     def _verify(self, vacancy: VacancyItem, footer_msg: str = "") -> bool:
         vacancy_info = _serialize_for_llm(vacancy)
-        logger.debug("AI prompt:\n", vacancy_info)
+        logger.debug(f"AI prompt:\n {vacancy_info}")
 
         msg = self.chat.send_message(vacancy_info)
         if msg.isdigit():

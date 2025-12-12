@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
+
 @dataclass
 class ResumeExperience:
     start: str
@@ -8,6 +9,7 @@ class ResumeExperience:
     company: str | None
     position: str
     description: Optional[str]
+
 
 @dataclass
 class EducationCourse:
@@ -24,11 +26,13 @@ class ElementaryEducation:
     name: str
     year: int
 
+
 @dataclass
 class EducationLevel:
     id: str
     name: str
-    
+
+
 @dataclass
 class ResumeEducation:
     primary: Optional[List[EducationCourse]]
@@ -37,25 +41,30 @@ class ResumeEducation:
     elementary: Optional[List[ElementaryEducation]]
     level: EducationLevel
 
+
 @dataclass
 class ProfessionalRoles:
     id: str
     name: str
-    
+
+
 @dataclass
 class LanguageLevel:
     id: str
     name: str
-    
+
+
 @dataclass
 class Language:
     id: str
     name: str
     level: LanguageLevel
 
+
 @dataclass
 class TotalExperience:
     months: int | None
+
 
 @dataclass
 class ResumeInfoResponse:
@@ -65,4 +74,4 @@ class ResumeInfoResponse:
     experience: List[ResumeExperience]
     education: ResumeEducation
     language: List[Language]
-    total_experience: TotalExperience | None 
+    total_experience: TotalExperience | None

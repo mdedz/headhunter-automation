@@ -78,8 +78,8 @@ class MyResumes(BaseEndpoint):
         data = self.client.get("/resumes/mine", *args, **kwargs)
 
         return from_dict(GetResumesResponse, data)
-    
-    
+
+
 class ResumeInfo(BaseEndpoint):
     """
     GET: https://api.hh.ru/resumes/{resume_id}
