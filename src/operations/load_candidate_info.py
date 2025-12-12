@@ -1,8 +1,12 @@
 import argparse
 import logging
 
+from ai import LLMFactory, Prompts
+from ai.base import ModelConfig
+from ai.utils import get_chat, get_prompts
 from api.hh_api.schemas.my_resumes import GetResumesResponse
 from api.hh_api.schemas.resume_info import ResumeInfoResponse
+from config import Config
 
 from ..api import ApiError, HHApi
 from ..main import BaseOperation
@@ -29,7 +33,17 @@ def _ask_for_resume_index(resumes_len: int) -> int | None:
         print_err("Вы ввели некорректный резюме id")
     
     return resume_index
-    
+
+def _confirm_config_change() -> bool:
+    while True:
+        choice = input("Вы уверены, что хотите изменить конфиг? (y/n): ").strip().lower()
+        if choice in ("y", "yes", "д", "да"):
+            return True
+        elif choice in ("n", "no", "н", "нет"):
+            return False
+        else:
+            print("Пожалуйста, введите 'y' или 'n'.")
+
     
 class Namespace(BaseNamespace):
     pass
@@ -52,7 +66,23 @@ class Operation(BaseOperation):
         resume_id = resumes.items[resume_index].id if resume_index is not None else None 
         
         logger.debug(f"Chosen resume id is {resume_id}")
-        self.build_prompt(resumes, resume_id)
+        prompt = self.build_prompt(resumes, resume_id)
+        candidate_info = self.build_candidate_info(prompt)
+        self.update_config(candidate_info)
+        
+    def update_config(self, candidate_info: str):
+        cfg = Config.load()
+        if _confirm_config_change():
+            cfg.update("candidate.info", candidate_info)
+            cfg.save()
+        
+    def build_candidate_info(self, resume_serialized: str):
+        cfg = Config.load()
+
+        prompts = get_prompts(cfg.llm.resume_builder.prompts, cfg.candidate)
+        resume_builder_chat = get_chat(prompts, cfg.llm.resume_builder.options)
+        
+        return resume_builder_chat.send_message(resume_serialized, True)    
         
     def build_prompt(self, resumes: GetResumesResponse, resume_id_to_serialize: str | None = None) -> str:
         resume_ids_to_serialize = [resume_id_to_serialize] if resume_id_to_serialize else [resume.id for resume in resumes.items]

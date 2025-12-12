@@ -17,7 +17,6 @@ from constants import INVALID_ISO8601_FORMAT
 
 print_err = partial(print, file=sys.stderr, flush=True)
 
-
 def get_config_path() -> Path:
     match platform.system():
         case "Windows":

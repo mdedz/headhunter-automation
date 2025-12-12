@@ -16,12 +16,13 @@ dacite = "^1.9.1"
 beautifulsoup4 = "^4.14.3"
 tqdm = "^4.67.1"
 prompt_toolkit = "^3.0.52"
+tomli-w = "^1.2.0"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^7.0.0"
 pylint = "^4.0.4"
 pytest = "^9.0.2"
-ruff = "^0.14.8"
+ruff = "^0.14.9"
 mypy = "^1.19.0"
 pytest-cov = "^7.0.0"
 

@@ -3,9 +3,9 @@ import logging
 from typing import List, Tuple
 from dataclasses import dataclass
 
+from ai.utils import get_chat, get_prompts
 from api.hh_api.schemas.negotiations import Employer, NegotiationItem, SalaryRange, Vacancy
 from api.hh_api.schemas.negotiations_messages import NegotiationsMessagesItem
-from operations.apply_similar.utils import get_chat
 
 from src.api import HHApi
 from src.config import Config
@@ -170,7 +170,8 @@ def process_cancel(api_client: HHApi, decline_allowed: str, vacancy: Vacancy, ne
 def process_ai(user_message: str) -> str:
     config = Config.load()
     chat_cfg = config.llm.chat_reply
-    chat = get_chat(chat_cfg.prompts, chat_cfg.options, config.candidate)
+    prompts = get_prompts(chat_cfg.prompts, config.candidate)
+    chat = get_chat(prompts, chat_cfg.options)
 
     msg: str = chat.send_message(user_message, verify_tag_end=False)
     return msg

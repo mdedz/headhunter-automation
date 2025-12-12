@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field, fields, is_dataclass
 from pathlib import Path
 from typing import Any, Optional, Union, get_type_hints
-
+from tomli_w import dump as toml_dump
 import tomllib
 
 
@@ -129,3 +129,24 @@ class Config:
             return cls_type(**kwargs)  # type: ignore
 
         return to_dc(cls, data)  # type: ignore
+
+    def update(self, path: str, value: Any):
+        parts = path.split(".")
+        obj = self
+        for p in parts[:-1]:
+            obj = getattr(obj, p)
+        setattr(obj, parts[-1], value)
+
+    def save(self, config_path: str | Path = "config/config.toml"):
+        def dc_to_dict(obj):
+            if is_dataclass(obj):
+                return {f.name: dc_to_dict(getattr(obj, f.name)) for f in fields(obj)}
+            elif isinstance(obj, (list, tuple)):
+                return [dc_to_dict(x) for x in obj]
+            else:
+                return obj
+
+        config_path = Path(config_path)
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+        with config_path.open("wb") as f:
+            toml_dump(dc_to_dict(self), f)

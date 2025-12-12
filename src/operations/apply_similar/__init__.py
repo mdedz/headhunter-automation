@@ -3,12 +3,13 @@ import random
 import time
 from typing import List
 
+from ai import Prompts
+from ai.utils import get_chat, get_prompts
 from api import ApiError, HHApi
 from api.errors import LimitExceeded
 from api.hh_api.schemas.similar_vacancies import VacancyItem
 from config import DefaultCoverLetter
 from mixins import get_resume_id
-from operations.apply_similar.utils import get_chat
 from operations.apply_similar.utils.negotiations import NegotiationsLLM, NegotiationsLocal
 from operations.apply_similar.utils.vacancy_relevance import VacancyRelevanceLLM
 from src.config import Config
@@ -29,8 +30,9 @@ class Operation(base.OperationBase):
         self.resume_id = args.resume_id or get_resume_id(api_client)
 
         if self.args.use_ai:
+            prompts = get_prompts(self.config.llm.cover_letters.prompts, self.config.candidate)
             negotiations_chat = get_chat(
-                self.config.llm.cover_letters.prompts, self.config.llm.cover_letters.options, self.config.candidate
+                prompts, self.config.llm.cover_letters.options, 
             )
 
             self.negotiations_llm = NegotiationsLLM(negotiations_chat)
@@ -39,10 +41,11 @@ class Operation(base.OperationBase):
             self.negotiations_chat = NegotiationsLocal(messages_list)
 
         if self.args.verify_relevance:
+            prompts = get_prompts(self.config.llm.verify_relevance.prompts, self.config.candidate)
+            
             vacancy_relevance_chat = get_chat(
-                self.config.llm.verify_relevance.prompts,
+                prompts,
                 self.config.llm.verify_relevance.options,
-                self.config.candidate,
             )
             self.vacancy_relevance_llm = VacancyRelevanceLLM(vacancy_relevance_chat)
 
