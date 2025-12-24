@@ -56,15 +56,17 @@ class Operation(base.OperationBase):
         self._apply_similar()
 
     def _apply_similar(self) -> None:
+        logger.info("Fetching vacancies")
         vacancies = self._get_vacancies()
-
+        logger.info("Got list of vacancies")
         for vacancy in vacancies:
             if self.args.block_irrelevant:
                 db = BlockedVacanciesDB()
                 if db.is_in_list(vacancy.id):
                     print(f"Skipping vacancy cause it is in blocked list: {vacancy.name}")
                     continue
-
+            
+            logger.info("Applying to vacancy")
             self._apply_vacancy(vacancy)
 
         print("📝 Отклики на вакансии разосланы!")

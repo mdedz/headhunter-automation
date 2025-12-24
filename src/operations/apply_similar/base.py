@@ -52,6 +52,7 @@ class Namespace(BaseNamespace):
     no_magic: bool
     premium: bool
     clusters: bool
+    work_format_remote: bool
 
 
 def _bool(v: bool) -> str:
@@ -140,6 +141,12 @@ class OperationBase(BaseOperation):
             help="Уровень опыта работы в вакансии. Возможные значения: noExperience, between1And3, between3And6, moreThan6",
             type=str,
             default=None,
+        )
+        parser.add_argument(
+            "--work-format-remote", 
+            default=False,
+            action=argparse.BooleanOptionalAction,
+            help="Формат работы удаленка"
         )
         parser.add_argument("--employment", nargs="+", help="Тип занятости (employment)")
         parser.add_argument("--area", nargs="+", help="Регион (area id)")
@@ -249,6 +256,8 @@ class OperationBase(BaseOperation):
             params["no_magic"] = _bool(args.no_magic)
         if args.premium is not None:
             params["premium"] = _bool(args.premium)
+        if args.work_format_remote is not None:
+            params["work_format"] = "REMOTE"
 
         return params
 

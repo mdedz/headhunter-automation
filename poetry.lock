@@ -951,6 +951,7 @@ description = "Python bindings for the Qt cross platform application toolkit"
 optional = true
 python-versions = ">=3.8"
 groups = ["main"]
+markers = "extra == \"pyqt6\""
 files = [
     {file = "PyQt6-6.7.0-1-cp38-abi3-macosx_10_14_universal2.whl", hash = "sha256:656734112853fde1be0963f0ad362e5efd87ba6c6ff234cb1f9fe8003ee254e6"},
     {file = "PyQt6-6.7.0-1-cp38-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:fa2d27fc2f5340f3f1e145c815101ef4550771a9e4bfafd4c7c2479fe83d9488"},
@@ -972,6 +973,7 @@ description = "The subset of a Qt installation needed by PyQt6."
 optional = true
 python-versions = "*"
 groups = ["main"]
+markers = "extra == \"pyqt6\""
 files = [
     {file = "PyQt6_Qt6-6.7.3-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:f517a93b6b1a814d4aa6587adc312e812ebaf4d70415bb15cfb44268c5ad3f5f"},
     {file = "PyQt6_Qt6-6.7.3-py3-none-macosx_11_0_arm64.whl", hash = "sha256:8551732984fb36a5f4f3db51eafc4e8e6caf18617365830285306f2db17a94c2"},
@@ -987,6 +989,7 @@ description = "The sip module support for PyQt6"
 optional = true
 python-versions = ">=3.10"
 groups = ["main"]
+markers = "extra == \"pyqt6\""
 files = [
     {file = "pyqt6_sip-13.10.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:0c7af45b0cc47484deb20f94d426d7f76beb141f86315d5ee5edc944ca88abea"},
     {file = "pyqt6_sip-13.10.3-cp310-cp310-manylinux1_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:d2b26256fa4d4d042d699138d9bc1df0180b981cce020f59fae15d310eccf4ee"},
@@ -1022,6 +1025,7 @@ description = "Python bindings for the Qt WebEngine framework"
 optional = true
 python-versions = ">=3.8"
 groups = ["main"]
+markers = "extra == \"pyqt6\""
 files = [
     {file = "PyQt6_WebEngine-6.7.0-cp38-abi3-macosx_10_14_universal2.whl", hash = "sha256:1a3df9d6ac2dfa1bb3b826f3926c13db5b6d427e96e8d574c5aa5445a8b13db8"},
     {file = "PyQt6_WebEngine-6.7.0-cp38-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:b4272943ef8c71b77d2421409982ddef56ff4c97be415b808f09b3507991460b"},
@@ -1042,6 +1046,7 @@ description = "The subset of a Qt installation needed by PyQt6-WebEngine."
 optional = true
 python-versions = "*"
 groups = ["main"]
+markers = "extra == \"pyqt6\""
 files = [
     {file = "PyQt6_WebEngine_Qt6-6.7.3-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:68812b2a5d0d417ce32dc4d11a304e7838e02c51013712e7533faf03448672d9"},
     {file = "PyQt6_WebEngine_Qt6-6.7.3-py3-none-macosx_11_0_arm64.whl", hash = "sha256:304b0eda7cbd0bb6dd20428a5ac6bb627d7836e3e1baad483f48dcd0faa862c8"},
@@ -1060,6 +1065,7 @@ description = "The subset of a Qt installation needed by PyQt6-WebEngine."
 optional = true
 python-versions = "*"
 groups = ["main"]
+markers = "extra == \"pyqt6\""
 files = [
     {file = "PyQt6_WebEngineSubwheel_Qt6-6.7.3-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:60a82726a5f87d788455fe7609df2c791507da64a9b6cefd5e9b590978da184b"},
     {file = "PyQt6_WebEngineSubwheel_Qt6-6.7.3-py3-none-macosx_11_0_arm64.whl", hash = "sha256:1746049e382471c1346a3d1a034c4c34a994b66f833c79945127e562c6c044a8"},
@@ -1302,7 +1308,10 @@ files = [
     {file = "wcwidth-0.2.14.tar.gz", hash = "sha256:4d478375d31bc5395a3c55c40ccdf3354688364cd61c4f6adacaa9215d0b3605"},
 ]
 
+[extras]
+pyqt6 = ["pyqt6", "pyqt6-webengine"]
+
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "3489167cd9df3f19f23e84e5ecce2257d94cc3aafa152707a990e7090bc99d53"
+content-hash = "953787d053df607f3bb01180b1d3254b8431c20414522c71569c445755fa950d"

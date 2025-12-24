@@ -120,6 +120,7 @@ class SimilarVacancies(BaseEndpoint):
 
     def get(self, resume_id: str, *args, **kwargs) -> SimilarVacanciesResponse:
         data = self.client.get(f"/resumes/{resume_id}/similar_vacancies", *args, **kwargs)
+        # data = self.client.get(f"/vacancies", *args, **kwargs)
 
         return from_dict(SimilarVacanciesResponse, data)
 
