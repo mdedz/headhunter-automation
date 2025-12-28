@@ -2,7 +2,7 @@ import logging
 from dataclasses import dataclass
 
 from ai.base import BaseLLM, LLMError
-from api.hh_api.schemas.similar_vacancies import VacancyItem
+from api.hh_api.schemas.vacancies import VacancyItem
 
 logger = logging.getLogger(__package__)
 

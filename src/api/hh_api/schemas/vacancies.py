@@ -54,6 +54,6 @@ class VacancyItem:
 
 
 @dataclass
-class SimilarVacanciesResponse:
+class VacanciesResponse:
     items: List[VacancyItem]
     pages: int

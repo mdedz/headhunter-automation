@@ -3,12 +3,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from api.hh_api.schemas.vacancies import Employer, VacanciesResponse, VacancyItem
 from src.api.hh_api.schemas.me import MeResponse
-from src.api.hh_api.schemas.similar_vacancies import (
-    Employer,
-    SimilarVacanciesResponse,
-    VacancyItem,
-)
 from src.api.hh_api.schemas.vacancy import Experience, KeySkills, VacancyFull
 from src.operations.apply_similar import Operation
 
@@ -92,6 +88,7 @@ def args() -> SimpleNamespace:
         premium=False,
         clusters=False,
         work_format_remote=False,
+        search_all=False,
     )
 
 
@@ -146,7 +143,7 @@ def me():
 
 
 def similar_vacancies_response():
-    resp = MagicMock(spec=SimilarVacanciesResponse)
+    resp = MagicMock(spec=VacanciesResponse)
     _vacancy = vacancy_item()
     resp.pages = 1
     resp.items = [_vacancy]

@@ -16,6 +16,7 @@ import requests
 from requests import Response, Session
 
 from api.hh_api.routes import (
+    AllVacancies,
     BlacklistedEmployers,
     Me,
     MyResumes,
@@ -277,6 +278,7 @@ class HHApi(ApiClient):
     publish_resume: PublishResume
     me: Me
     similar_vacancies: SimilarVacancies
+    all_vacancies: AllVacancies
     negotiations_messages: NegotiationsMessages
     vacancy: Vacancy
 
@@ -289,6 +291,7 @@ class HHApi(ApiClient):
         self.publish_resume = PublishResume(self)
         self.me = Me(self)
         self.similar_vacancies = SimilarVacancies(self)
+        self.all_vacancies = AllVacancies(self)
         self.negotiations_messages = NegotiationsMessages(self)
         self.vacancy = Vacancy(self)
         self.resume_info = ResumeInfo(self)

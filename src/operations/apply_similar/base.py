@@ -3,7 +3,7 @@ import logging
 from abc import abstractmethod
 from typing import Any, List, TextIO
 
-from api.hh_api.schemas.similar_vacancies import VacancyItem
+from api.hh_api.schemas.vacancies import VacancyItem
 from src.api.client import HHApi
 
 from ...main import BaseOperation
@@ -51,6 +51,7 @@ class Namespace(BaseNamespace):
     premium: bool
     clusters: bool
     work_format_remote: bool
+    search_all: bool
 
 
 def _bool(v: bool) -> str:
@@ -188,6 +189,11 @@ class OperationBase(BaseOperation):
             "--clusters",
             action=argparse.BooleanOptionalAction,
             help="Включить кластеры (по умолчанию None)",
+        )
+        parser.add_argument(
+            "--search-all",
+            action=argparse.BooleanOptionalAction,
+            help="Искать все вакансии",
         )
 
     def _get_search_params(self, args: Namespace, page: int, per_page: int) -> dict:

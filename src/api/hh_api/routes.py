@@ -10,7 +10,7 @@ from api.hh_api.schemas.my_resumes import GetResumesResponse
 from api.hh_api.schemas.negotiations import GetNegotiationsListResponse
 from api.hh_api.schemas.negotiations_messages import GetNegotiationsMessagesResponse
 from api.hh_api.schemas.resume_info import ResumeInfoResponse
-from api.hh_api.schemas.similar_vacancies import SimilarVacanciesResponse
+from api.hh_api.schemas.vacancies import VacanciesResponse
 from api.hh_api.schemas.vacancy import VacancyFull
 
 
@@ -121,11 +121,21 @@ class SimilarVacancies(BaseEndpoint):
     GET: https://api.hh.ru/resumes/{resume_id}/similar_vacancies
     """
 
-    def get(self, resume_id: str, *args, **kwargs) -> SimilarVacanciesResponse:
+    def get(self, resume_id: str, *args, **kwargs) -> VacanciesResponse:
         data = self.client.get(f"/resumes/{resume_id}/similar_vacancies", *args, **kwargs)
-        # data = self.client.get(f"/vacancies", *args, **kwargs)
 
-        return from_dict(SimilarVacanciesResponse, data)
+        return from_dict(VacanciesResponse, data)
+
+
+class AllVacancies(BaseEndpoint):
+    """
+    GET: https://api.hh.ru/vacancies
+    """
+
+    def get(self, *args, **kwargs) -> VacanciesResponse:
+        data = self.client.get("/vacancies", *args, **kwargs)
+
+        return from_dict(VacanciesResponse, data)
 
 
 class Vacancy(BaseEndpoint):

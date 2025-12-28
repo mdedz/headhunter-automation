@@ -6,7 +6,7 @@ from typing import List
 from ai.utils import get_chat, get_prompts
 from api import ApiError, HHApi
 from api.errors import LimitExceeded
-from api.hh_api.schemas.similar_vacancies import VacancyItem
+from api.hh_api.schemas.vacancies import VacancyItem
 from config import DefaultCoverLetter
 from mixins import get_resume_id
 from operations.apply_similar.utils.negotiations import (
@@ -54,12 +54,13 @@ class Operation(base.OperationBase):
 
         self.apply_min_interval, self.apply_max_interval = args.apply_interval
         self.page_min_interval, self.page_max_interval = args.page_interval
+        self.search_all_vacancies = args.search_all
 
         self._apply_similar()
 
     def _apply_similar(self) -> None:
         logger.info("Fetching vacancies")
-        vacancies = self._get_vacancies()
+        vacancies = self._get_vacancies(search_all_vacancies=self.search_all_vacancies)
         logger.info("Got list of vacancies")
         for vacancy in vacancies:
             if self.args.block_irrelevant:
@@ -154,12 +155,15 @@ class Operation(base.OperationBase):
             ")",
         )
 
-    def _get_vacancies(self, per_page: int = 100) -> List[VacancyItem]:
+    def _get_vacancies(self, per_page: int = 100, search_all_vacancies=False) -> List[VacancyItem]:
         rv = []
         # API gives only 2 000 items
         for page in range(20):
             params = self._get_search_params(self.args, page, per_page)
-            vacancies = self.api_client.similar_vacancies.get(self.resume_id, params)
+            if search_all_vacancies:
+                vacancies = self.api_client.all_vacancies.get(params)
+            else:
+                vacancies = self.api_client.similar_vacancies.get(self.resume_id, params)
 
             rv.extend(vacancies.items)
             if page >= vacancies.pages - 1:
