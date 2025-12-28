@@ -3,8 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field, fields, is_dataclass
 from pathlib import Path
 from typing import Any, Optional, Union, get_type_hints
-from tomli_w import dump as toml_dump
+
 import tomllib
+from tomli_w import dump as toml_dump
 
 
 @dataclass

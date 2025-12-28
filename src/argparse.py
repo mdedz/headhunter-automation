@@ -1,5 +1,5 @@
-import sys
 import argparse
+import sys
 
 
 class Color:
@@ -38,7 +38,7 @@ class CustomHelpFormatter(argparse.HelpFormatter):
                 paint_text(Color.MAGENTA, "[OPERATION] "),
                 paint_text(Color.MAGENTA, "[OPERATION_OPTIONS] "),
                 "\n",
-                f"If you want to print help for operation then: ",
+                "If you want to print help for operation then: ",
                 paint_text(Color.CYAN, "headhunter-automation [OPERATION] --help"),
                 "\n",
                 "Help structure is: ",

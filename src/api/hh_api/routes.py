@@ -1,14 +1,17 @@
-from dacite import from_dict, Config
+from dacite import Config, from_dict
 
 from api.hh_api.base import BaseEndpoint
-from api.hh_api.schemas.blacklisted_employers import GetBlacklistedEmployersResponse, PutBlacklistedEmployersResponse
+from api.hh_api.schemas.blacklisted_employers import (
+    GetBlacklistedEmployersResponse,
+    PutBlacklistedEmployersResponse,
+)
 from api.hh_api.schemas.me import MeResponse
 from api.hh_api.schemas.my_resumes import GetResumesResponse
-from api.hh_api.schemas.negotiations import DeleteNegotiationsResponse, GetNegotiationsListResponse
+from api.hh_api.schemas.negotiations import GetNegotiationsListResponse
 from api.hh_api.schemas.negotiations_messages import GetNegotiationsMessagesResponse
+from api.hh_api.schemas.resume_info import ResumeInfoResponse
 from api.hh_api.schemas.similar_vacancies import SimilarVacanciesResponse
 from api.hh_api.schemas.vacancy import VacancyFull
-from api.hh_api.schemas.resume_info import ResumeInfoResponse
 
 
 class BlacklistedEmployers(BaseEndpoint):

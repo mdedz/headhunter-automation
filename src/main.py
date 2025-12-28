@@ -9,12 +9,11 @@ from pathlib import Path
 from pkgutil import iter_modules
 from typing import Literal, Sequence
 
-from src.config import Config
-
 from src.api import HHApi
-from src.color_log import ColorHandler
-from src.utils import Data
 from src.argparse import CustomHelpFormatter
+from src.color_log import ColorHandler
+from src.config import Config
+from src.utils import Data
 
 logger = logging.getLogger()
 

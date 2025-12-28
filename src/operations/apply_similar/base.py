@@ -8,9 +8,7 @@ from src.api.client import HHApi
 
 from ...main import BaseOperation
 from ...main import Namespace as BaseNamespace
-from ...utils import (
-    parse_interval,
-)
+from ...utils import parse_interval
 
 logger = logging.getLogger(__package__)
 
@@ -143,10 +141,7 @@ class OperationBase(BaseOperation):
             default=None,
         )
         parser.add_argument(
-            "--work-format-remote", 
-            default=False,
-            action=argparse.BooleanOptionalAction,
-            help="Формат работы удаленка"
+            "--work-format-remote", default=False, action=argparse.BooleanOptionalAction, help="Формат работы удаленка"
         )
         parser.add_argument("--employment", nargs="+", help="Тип занятости (employment)")
         parser.add_argument("--area", nargs="+", help="Регион (area id)")

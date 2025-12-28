@@ -1,17 +1,15 @@
 import argparse
 import logging
 
-from ai import LLMFactory, Prompts
-from ai.base import ModelConfig
 from ai.utils import get_chat, get_prompts
 from api.hh_api.schemas.my_resumes import GetResumesResponse
 from api.hh_api.schemas.resume_info import ResumeInfoResponse
 from config import Config
 
-from ..api import ApiError, HHApi
+from ..api import HHApi
 from ..main import BaseOperation
 from ..main import Namespace as BaseNamespace
-from ..utils import print_err, truncate_string
+from ..utils import print_err
 
 logger = logging.getLogger(__package__)
 
@@ -150,7 +148,7 @@ class Operation(BaseOperation):
             parts.append("Education:\n" + "\n".join(edu_lines))
 
         if resume.language:
-            lang_lines = [f"- {l.name}: {l.level.name}" for l in resume.language]
+            lang_lines = [f"- {lang.name}: {lang.level.name}" for lang in resume.language]
             parts.append("Languages:\n" + "\n".join(lang_lines))
 
         return "\n".join(parts)

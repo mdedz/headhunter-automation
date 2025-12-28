@@ -1,15 +1,18 @@
-from enum import Enum
 import logging
-from typing import List, Tuple
 from dataclasses import dataclass
+from enum import Enum
+from typing import List, Tuple
 
 from ai.utils import get_chat, get_prompts
-from api.hh_api.schemas.negotiations import Employer, NegotiationItem, SalaryRange, Vacancy
+from api.hh_api.schemas.negotiations import (
+    Employer,
+    NegotiationItem,
+    SalaryRange,
+    Vacancy,
+)
 from api.hh_api.schemas.negotiations_messages import NegotiationsMessagesItem
-
 from src.api import HHApi
 from src.config import Config
-
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +49,7 @@ def should_reply_to_negotiation(
         logger.debug(f"Skipping negotiation, only invitations, state_id state_id {state_id}")
         return False
 
-    nid = negotiation.id
+    # nid = negotiation.id
 
     vacancy = negotiation.vacancy
     if vacancy is None:

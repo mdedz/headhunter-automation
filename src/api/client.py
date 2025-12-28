@@ -15,6 +15,17 @@ from urllib.parse import urlencode
 import requests
 from requests import Response, Session
 
+from api.hh_api.routes import (
+    BlacklistedEmployers,
+    Me,
+    MyResumes,
+    Negotiations,
+    NegotiationsMessages,
+    PublishResume,
+    ResumeInfo,
+    SimilarVacancies,
+    Vacancy,
+)
 from constants import ANDROID_CLIENT_ID, ANDROID_CLIENT_SECRET
 from schemas import AccessToken
 
@@ -256,19 +267,6 @@ class ApiClient(BaseClient):
             "access_expires_at": self.access_expires_at,
             "token_type": "bearer",
         }
-
-
-from api.hh_api.routes import (
-    BlacklistedEmployers,
-    Me,
-    MyResumes,
-    Negotiations,
-    NegotiationsMessages,
-    PublishResume,
-    ResumeInfo,
-    SimilarVacancies,
-    Vacancy,
-)
 
 
 class HHApi(ApiClient):

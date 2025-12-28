@@ -1,9 +1,12 @@
 import argparse
-import logging
 import datetime
+import logging
 from datetime import timedelta
 from typing import List
 
+from tqdm import tqdm
+
+from api import HHApi
 from api.hh_api.schemas.negotiations import (
     Employer,
     GetNegotiationsListResponse,
@@ -11,13 +14,10 @@ from api.hh_api.schemas.negotiations import (
     NegotiationState,
     Vacancy,
 )
-
-from api import HHApi
 from constants import INVALID_ISO8601_FORMAT
 from main import BaseOperation
 from main import Namespace as BaseNamespace
 from utils import truncate_string
-from tqdm import tqdm
 
 logger = logging.getLogger(__package__)
 

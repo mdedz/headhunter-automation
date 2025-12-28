@@ -3,14 +3,16 @@ import random
 import time
 from typing import List
 
-from ai import Prompts
 from ai.utils import get_chat, get_prompts
 from api import ApiError, HHApi
 from api.errors import LimitExceeded
 from api.hh_api.schemas.similar_vacancies import VacancyItem
 from config import DefaultCoverLetter
 from mixins import get_resume_id
-from operations.apply_similar.utils.negotiations import NegotiationsLLM, NegotiationsLocal
+from operations.apply_similar.utils.negotiations import (
+    NegotiationsLLM,
+    NegotiationsLocal,
+)
 from operations.apply_similar.utils.vacancy_relevance import VacancyRelevanceLLM
 from src.config import Config
 from src.operations.apply_similar import base
@@ -65,7 +67,7 @@ class Operation(base.OperationBase):
                 if db.is_in_list(vacancy.id):
                     print(f"Skipping vacancy cause it is in blocked list: {vacancy.name}")
                     continue
-            
+
             logger.info("Applying to vacancy")
             self._apply_vacancy(vacancy)
 
@@ -86,7 +88,7 @@ class Operation(base.OperationBase):
             return False
 
         relations = vacancy.relations
-        employer_id = vacancy.employer.id
+        # employer_id = vacancy.employer.id
 
         if relations:
             logger.debug(f"Пропускаем вакансию с откликом: {vacancy.alternate_url}")
@@ -142,7 +144,7 @@ class Operation(base.OperationBase):
         interval = random.uniform(self.apply_min_interval, self.apply_max_interval)
         time.sleep(interval)
 
-        res = self.api_client.negotiations.post(params)
+        self.api_client.negotiations.post(params)
 
         print(
             "📨 Отправили отклик",

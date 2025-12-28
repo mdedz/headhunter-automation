@@ -5,10 +5,15 @@ import re
 import time
 from itertools import count
 from typing import List, Tuple
+
 from prompt_toolkit import prompt
 
-from api.hh_api.schemas.negotiations import Employer, NegotiationItem, SalaryRange, Vacancy
-from api.hh_api.schemas.negotiations_messages import NegotiationsMessagesItem
+from api.hh_api.schemas.negotiations import (
+    Employer,
+    NegotiationItem,
+    SalaryRange,
+    Vacancy,
+)
 from mixins import get_resume_id
 from operations.reply_employers.utils import (
     NegotiationCommandType,
@@ -21,16 +26,14 @@ from operations.reply_employers.utils import (
     process_send_msg,
     should_reply_to_negotiation,
 )
-
 from src.api import ApiError, HHApi
+from src.config import Config
 from src.main import BaseOperation
 from src.main import Namespace as BaseNamespace
-from src.utils import parse_interval, random_text
-from src.config import Config
-from src.utils import print_err
+from src.utils import parse_interval, print_err, random_text
 
 GOOGLE_DOCS_RE = re.compile(
-    r"\b(?:https?:\/\/)?(?:docs|forms|sheets|slides|drive)\.google\.com\/(?:document|spreadsheets|presentation|forms|file)\/(?:d|u)\/[a-zA-Z0-9_\-]+(?:\/[a-zA-Z0-9_\-]+)?\/?(?:[?#].*)?\b|\b(?:https?:\/\/)?(?:goo\.gl|forms\.gle)\/[a-zA-Z0-9]+\b",
+    r"\b(?:https?:\/\/)?(?:docs|forms|sheets|slides|drive)\.google\.com\/(?:document|spreadsheets|presentation|forms|file)\/(?:d|u)\/[a-zA-Z0-9_\-]+(?:\/[a-zA-Z0-9_\-]+)?\/?(?:[?#].*)?\b|\b(?:https?:\/\/)?(?:goo\.gl|forms\.gle)\/[a-zA-Z0-9]+\b",  # noqa: E501
     re.I,
 )
 
@@ -127,7 +130,6 @@ class Operation(BaseOperation):
         self.reply_unanswered = args.reply_unanswered
         self.reply_not_viewed_by_opponent = args.reply_not_viewed_by_opponent
 
-        logger.debug(f"{self.reply_message = }")
         self._reply_chats()
 
     def _get_blacklisted(self) -> list[str]:

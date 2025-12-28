@@ -1,7 +1,6 @@
 import logging
 import random
 from dataclasses import dataclass
-from typing import List, TextIO
 
 from bs4 import BeautifulSoup
 
@@ -9,8 +8,8 @@ from ai.base import BaseLLM, LLMError
 from api.hh_api.schemas.me import MeResponse
 from api.hh_api.schemas.similar_vacancies import VacancyItem
 from api.hh_api.schemas.vacancy import VacancyFull
-from utils import random_text
 from config import DefaultCoverLetter
+from utils import random_text
 
 logger = logging.getLogger(__package__)
 

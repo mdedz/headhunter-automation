@@ -1,17 +1,15 @@
-import sys
-from pathlib import Path
-
-from api.hh_api.schemas.vacancy import Experience, KeySkills, VacancyFull
-
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from src.api.hh_api.schemas.me import MeResponse
-from src.api.hh_api.schemas.similar_vacancies import Employer, SimilarVacanciesResponse, VacancyItem
+from src.api.hh_api.schemas.similar_vacancies import (
+    Employer,
+    SimilarVacanciesResponse,
+    VacancyItem,
+)
+from src.api.hh_api.schemas.vacancy import Experience, KeySkills, VacancyFull
 from src.operations.apply_similar import Operation
 
 
@@ -93,7 +91,7 @@ def args() -> SimpleNamespace:
         no_magic=False,
         premium=False,
         clusters=False,
-        work_format_remote = False
+        work_format_remote=False,
     )
 
 
@@ -223,7 +221,6 @@ def test_apply_vacancy_skips_if_not_relevant(db_mock, operation, args, api, vaca
 
     assert operation._apply_vacancy(vacancy) is False
     operation.vacancy_relevance_llm.verify.assert_called_once()
-
 
 
 # @patch("src.operations.apply_similar.random.uniform", lambda *_: 0)
