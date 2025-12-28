@@ -93,6 +93,7 @@ def args() -> SimpleNamespace:
         no_magic=False,
         premium=False,
         clusters=False,
+        work_format_remote = False
     )
 
 
